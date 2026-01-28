@@ -1,0 +1,138 @@
+nohup: ignoring input
+================================================================================
+BACKTESTING EXTREME NEGATIVE FUNDING STRATEGY
+================================================================================
+================================================================================
+BACKTEST CONFIGURATION
+================================================================================
+
+📊 Data Fetching:
+  Days of history:        30 days
+  API delay:              0.2 seconds
+
+💰 Capital & Costs:
+  Initial capital:        $10,000.00
+  Position size:          100.0% of capital
+  Transaction cost:       0.050%
+
+🎯 Strategy:
+  Number of positions:    1 (top 1 extreme negative)
+  Holding period:         1 hour(s)
+
+⚠️  Risk Management:
+  Stop loss:              Disabled
+  Take profit:            Disabled
+
+🔍 Filters:
+  Min funding threshold:  -0.100%
+  Max funding threshold:  0.000%
+================================================================================
+
+Loading funding rate data...
+Loaded 55,460 funding rate records
+
+Running backtest...
+Running backtest for 720 hours...
+Date range: 2025-12-29 08:00:00 to 2026-01-28 07:00:00
+Trading 1 position(s) per hour
+Processed 20/719 hours... Capital: $9119.25 (-8.81%) | Trades: 20
+Processed 40/719 hours... Capital: $8415.69 (-15.84%) | Trades: 40
+Processed 60/719 hours... Capital: $6189.57 (-38.10%) | Trades: 60
+Processed 80/719 hours... Capital: $5659.94 (-43.40%) | Trades: 80
+Processed 100/719 hours... Capital: $5147.42 (-48.53%) | Trades: 100
+Processed 120/719 hours... Capital: $5359.60 (-46.40%) | Trades: 120
+Processed 140/719 hours... Capital: $5251.76 (-47.48%) | Trades: 140
+Processed 160/719 hours... Capital: $5028.94 (-49.71%) | Trades: 160
+Processed 180/719 hours... Capital: $4869.78 (-51.30%) | Trades: 180
+Processed 200/719 hours... Capital: $4644.50 (-53.55%) | Trades: 200
+Processed 220/719 hours... Capital: $4424.03 (-55.76%) | Trades: 220
+Rate limit hit for BABY, retry 1/5 after 1.0s
+Rate limit hit for BABY, retry 2/5 after 2.0s
+Processed 240/719 hours... Capital: $4437.50 (-55.63%) | Trades: 240
+Processed 260/719 hours... Capital: $4725.14 (-52.75%) | Trades: 260
+Processed 280/719 hours... Capital: $4719.71 (-52.80%) | Trades: 280
+Processed 300/719 hours... Capital: $4652.43 (-53.48%) | Trades: 300
+Processed 320/719 hours... Capital: $4323.69 (-56.76%) | Trades: 320
+Processed 340/719 hours... Capital: $4478.24 (-55.22%) | Trades: 340
+Processed 360/719 hours... Capital: $4321.20 (-56.79%) | Trades: 360
+Processed 380/719 hours... Capital: $5382.23 (-46.18%) | Trades: 380
+Processed 400/719 hours... Capital: $5543.20 (-44.57%) | Trades: 400
+Processed 420/719 hours... Capital: $4695.17 (-53.05%) | Trades: 420
+Processed 440/719 hours... Capital: $4514.33 (-54.86%) | Trades: 440
+Processed 460/719 hours... Capital: $4846.18 (-51.54%) | Trades: 460
+Processed 480/719 hours... Capital: $5093.32 (-49.07%) | Trades: 480
+Processed 500/719 hours... Capital: $3976.57 (-60.23%) | Trades: 500
+Processed 520/719 hours... Capital: $3903.11 (-60.97%) | Trades: 520
+Processed 540/719 hours... Capital: $3202.56 (-67.97%) | Trades: 540
+Processed 560/719 hours... Capital: $3101.74 (-68.98%) | Trades: 560
+Processed 580/719 hours... Capital: $2109.83 (-78.90%) | Trades: 580
+Processed 600/719 hours... Capital: $1708.00 (-82.92%) | Trades: 600
+Processed 620/719 hours... Capital: $1389.06 (-86.11%) | Trades: 620
+Processed 640/719 hours... Capital: $1356.51 (-86.43%) | Trades: 640
+Processed 660/719 hours... Capital: $1025.73 (-89.74%) | Trades: 660
+Processed 680/719 hours... Capital: $1185.85 (-88.14%) | Trades: 680
+Processed 700/719 hours... Capital: $1053.81 (-89.46%) | Trades: 700
+
+✓ Backtest complete! Executed 719 trades across 719 hours.
+✓ Trades saved to backtest_trades.csv
+
+================================================================================
+BACKTEST RESULTS - EXTREME NEGATIVE FUNDING STRATEGY
+================================================================================
+
+📊 Capital & Returns:
+  Initial Capital:     $10,000.00
+  Final Capital:       $1,029.62
+  Total Return:        -89.70%
+  Total PnL:           $-8,970.38
+
+📈 Trade Statistics:
+  Total Trades:        719
+  Winning Trades:      311 (43.25%)
+  Losing Trades:       408
+  Avg PnL per Trade:   $-12.48 (-0.2789%)
+
+💰 Win/Loss Analysis:
+  Average Win:         $60.36
+  Average Loss:        $-68.00
+  Profit Factor:       0.68
+
+📉 Risk Metrics:
+  Max Drawdown:        -90.34%
+  Sharpe Ratio:        -9.68
+
+================================================================================
+
+✓ Metrics saved to backtest_metrics.csv
+
+Generating plots...
+
+✓ Results plot saved to backtest_results.png
+
+================================================================================
+ADDITIONAL INSIGHTS
+================================================================================
+
+Top 10 Coins by Total PnL:
+  BERA: $752.62
+  BABY: $209.40
+  CELO: $180.67
+  MELANIA: $54.16
+  FOGO: $52.62
+  ATOM: $-11.09
+  RESOLV: $-23.77
+  ZORA: $-57.88
+  VVV: $-77.85
+  DOOD: $-122.50
+
+Best Trade:
+  BERA on 2026-01-14 10:00:00
+  PnL: $498.15 (8.59%)
+
+Worst Trade:
+  TST on 2025-12-31 05:00:00
+  PnL: $-1410.92 (-16.88%)
+
+================================================================================
+Backtest complete!
+================================================================================

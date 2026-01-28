@@ -1,0 +1,2 @@
+initial_capital,final_capital,total_return_pct,total_pnl,num_trades,num_winning,num_losing,win_rate_pct,avg_win,avg_loss,profit_factor,max_drawdown_pct,sharpe_ratio,avg_pnl_per_trade,avg_return_per_trade_pct
+10000.0,3456.492847187905,-65.43507152812094,-6543.507152812095,305,121,184,39.67213114754099,167.28120126429314,-145.56811144451933,0.7556982877562938,-76.51432419123229,-9.887293767686828,-21.45412181249864,-0.3058783397736425
