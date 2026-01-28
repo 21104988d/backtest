@@ -380,7 +380,7 @@ def main():
     # Load funding rate data
     print("Loading funding rate data...")
     df = pd.read_csv('funding_history.csv')
-    df['datetime'] = pd.to_datetime(df['datetime'])
+    df['datetime'] = pd.to_datetime(df['datetime'], format='mixed')
     print(f"Loaded {len(df):,} funding rate records\n")
     
     # Run backtest

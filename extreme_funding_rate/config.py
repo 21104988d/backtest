@@ -15,6 +15,7 @@ def load_config() -> Dict[str, Any]:
         
         # Backtest parameters
         'initial_capital': 10000,
+        'position_size_fixed': 1000,  # Fixed USD per trade (0 = use percentage)
         'position_size_pct': 1.0,
         'transaction_cost': 0.0005,
         
@@ -51,6 +52,7 @@ def load_config() -> Dict[str, Any]:
                         'DAYS_BACK': 'days_back',
                         'FETCH_DELAY': 'fetch_delay',
                         'INITIAL_CAPITAL': 'initial_capital',
+                        'POSITION_SIZE_FIXED': 'position_size_fixed',
                         'POSITION_SIZE_PCT': 'position_size_pct',
                         'TRANSACTION_COST': 'transaction_cost',
                         'NUM_POSITIONS': 'num_positions',
@@ -65,7 +67,7 @@ def load_config() -> Dict[str, Any]:
                         config_key = env_to_config[key]
                         # Convert to appropriate type
                         try:
-                            if config_key in ['days_back', 'num_positions', 'holding_period_hours']:
+                            if config_key in ['days_back', 'num_positions', 'holding_period_hours', 'position_size_fixed']:
                                 config[config_key] = int(value)
                             else:
                                 config[config_key] = float(value)
@@ -86,7 +88,10 @@ def print_config(config: Dict[str, Any]):
     
     print("\n💰 Capital & Costs:")
     print(f"  Initial capital:        ${config['initial_capital']:,.2f}")
-    print(f"  Position size:          {config['position_size_pct']*100:.1f}% of capital")
+    if config.get('position_size_fixed', 0) > 0:
+        print(f"  Position size:          ${config['position_size_fixed']:,.2f} FIXED per trade")
+    else:
+        print(f"  Position size:          {config['position_size_pct']*100:.1f}% of capital (dynamic)")
     print(f"  Transaction cost:       {config['transaction_cost']*100:.3f}%")
     
     print("\n🎯 Strategy:")

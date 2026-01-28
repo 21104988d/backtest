@@ -17,7 +17,8 @@ class CachedBacktest:
     def __init__(self, price_cache_file='price_cache.csv', **kwargs):
         """Initialize with price cache."""
         self.initial_capital = kwargs.get('initial_capital', 10000)
-        self.position_size = kwargs.get('position_size', 1.0)
+        self.position_size_fixed = kwargs.get('position_size_fixed', 0)
+        self.position_size_pct = kwargs.get('position_size_pct', 1.0)
         self.transaction_cost = kwargs.get('transaction_cost', 0.0005)
         self.num_positions = kwargs.get('num_positions', 1)
         
@@ -44,7 +45,7 @@ class CachedBacktest:
     def load_funding_data(self, funding_file: str = 'funding_history.csv') -> pd.DataFrame:
         """Load and prepare funding rate data."""
         df = pd.read_csv(funding_file)
-        df['datetime'] = pd.to_datetime(df['datetime'])
+        df['datetime'] = pd.to_datetime(df['datetime'], format='mixed')
         df = df.sort_values(['datetime', 'coin']).reset_index(drop=True)
         df['hour'] = df['datetime'].dt.floor('h')
         return df
@@ -68,8 +69,11 @@ class CachedBacktest:
         if entry_price is None or exit_price is None:
             return None
         
-        # Calculate position
-        trade_capital = capital * self.position_size
+        # Calculate position - use fixed if set, otherwise percentage
+        if self.position_size_fixed > 0:
+            trade_capital = min(self.position_size_fixed, capital)  # Don't exceed available capital
+        else:
+            trade_capital = capital * self.position_size_pct
         entry_cost = trade_capital * self.transaction_cost
         effective_capital = trade_capital - entry_cost
         position_size = effective_capital / entry_price
@@ -281,7 +285,8 @@ def main():
         backtest = CachedBacktest(
             price_cache_file='price_cache.csv',
             initial_capital=config['initial_capital'],
-            position_size=config['position_size_pct'],
+            position_size_fixed=config.get('position_size_fixed', 0),
+            position_size_pct=config['position_size_pct'],
             transaction_cost=config['transaction_cost'],
             num_positions=config['num_positions']
         )

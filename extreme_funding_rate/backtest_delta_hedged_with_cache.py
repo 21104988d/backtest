@@ -5,11 +5,16 @@ Long extreme funding coin + Short BTC hedge.
 """
 import pandas as pd
 import numpy as np
+import os
 from datetime import datetime, timedelta
 from typing import Dict, List, Tuple, Optional
 import matplotlib.pyplot as plt
 import seaborn as sns
 from config import load_config, print_config
+
+# Set base directory to script location
+BASEDIR = os.path.dirname(os.path.abspath(__file__))
+os.chdir(BASEDIR)
 
 
 class DeltaHedgedCachedBacktest:
@@ -18,7 +23,8 @@ class DeltaHedgedCachedBacktest:
     def __init__(self, price_cache_file='price_cache.csv', **kwargs):
         """Initialize with price cache."""
         self.initial_capital = kwargs.get('initial_capital', 10000)
-        self.position_size = kwargs.get('position_size', 1.0)
+        self.position_size_fixed = kwargs.get('position_size_fixed', 1000)  # Fixed USD per trade
+        self.position_size_pct = kwargs.get('position_size_pct', 1.0)
         self.transaction_cost = kwargs.get('transaction_cost', 0.0005)
         self.num_positions = kwargs.get('num_positions', 1)
         
@@ -28,7 +34,7 @@ class DeltaHedgedCachedBacktest:
         # Load price cache
         print(f"\n📦 Loading price cache from {price_cache_file}...")
         self.price_cache = pd.read_csv(price_cache_file)
-        self.price_cache['timestamp'] = pd.to_datetime(self.price_cache['timestamp'])
+        self.price_cache['timestamp'] = pd.to_datetime(self.price_cache['timestamp'], format='mixed')
         
         # Create lookup index
         self.price_cache['key'] = self.price_cache['coin'] + '_' + self.price_cache['timestamp'].astype(str)
@@ -44,13 +50,37 @@ class DeltaHedgedCachedBacktest:
     def load_funding_data(self, funding_file: str = 'funding_history.csv') -> pd.DataFrame:
         """Load funding rate data."""
         df = pd.read_csv(funding_file)
-        df['datetime'] = pd.to_datetime(df['datetime'])
+        df['datetime'] = pd.to_datetime(df['datetime'], format='mixed')
         df = df.sort_values(['datetime', 'coin']).reset_index(drop=True)
         df['hour'] = df['datetime'].dt.floor('h')
         return df
     
+    def get_top_negative_funding_with_price(self, df: pd.DataFrame, hour: pd.Timestamp, 
+                                             exit_time: pd.Timestamp) -> Optional[Tuple[str, float]]:
+        """Get the most negative funding coin that has valid price data."""
+        hour_data = df[df['hour'] == hour]
+        if hour_data.empty:
+            return None
+        
+        # Try top 10 most negative funding coins until we find one with price data
+        candidates = hour_data.nsmallest(10, 'funding_rate')
+        
+        for _, row in candidates.iterrows():
+            coin = row['coin']
+            # Check if all required prices exist
+            coin_entry = self.get_cached_price(coin, hour)
+            coin_exit = self.get_cached_price(coin, exit_time)
+            btc_entry = self.get_cached_price('BTC', hour)
+            btc_exit = self.get_cached_price('BTC', exit_time)
+            
+            if all([coin_entry, coin_exit, btc_entry, btc_exit]):
+                return (coin, row['funding_rate'])
+        
+        # No valid coin found
+        return None
+    
     def get_top_negative_funding(self, df: pd.DataFrame, hour: pd.Timestamp) -> Optional[Tuple[str, float]]:
-        """Get the most negative funding coin."""
+        """Get the most negative funding coin (legacy, doesn't check prices)."""
         hour_data = df[df['hour'] == hour]
         if hour_data.empty:
             return None
@@ -79,8 +109,11 @@ class DeltaHedgedCachedBacktest:
         coin_return_pct = ((coin_exit - coin_entry) / coin_entry) * 100
         btc_return_pct = ((btc_exit - btc_entry) / btc_entry) * 100
         
-        # Position sizing
-        position_capital = capital * self.position_size
+        # Position sizing - use fixed size if set, otherwise percentage
+        if self.position_size_fixed > 0:
+            position_capital = min(self.position_size_fixed, capital)  # Don't exceed available capital
+        else:
+            position_capital = capital * self.position_size_pct
         
         # Costs (4 transactions: buy coin, sell coin, short BTC, cover BTC)
         coin_entry_cost = position_capital * self.transaction_cost
@@ -135,26 +168,29 @@ class DeltaHedgedCachedBacktest:
         trades_failed = 0
         
         for i, hour in enumerate(hours, 1):
-            # Get most negative funding coin
-            result = self.get_top_negative_funding(df, hour)
-            if not result:
-                continue
-            
-            coin, funding_rate = result
             entry_time = hour
             exit_time = hour + timedelta(hours=1)
             
-            # Simulate delta-hedged trade
+            # Get most negative funding coin WITH valid price data
+            result = self.get_top_negative_funding_with_price(df, hour, exit_time)
+            if not result:
+                trades_failed += 1
+                self.equity_curve.append((exit_time, capital))
+                if i % 10 == 0 or i == len(hours):
+                    pct_change = ((capital - self.initial_capital) / self.initial_capital) * 100
+                    print(f"Hour {i}/{len(hours)} | Capital: ${capital:,.2f} ({pct_change:+.2f}%) | Trades: {trades_executed}")
+                continue
+            
+            coin, funding_rate = result
+            
+            # Simulate delta-hedged trade (should always succeed since we verified prices)
             trade = self.simulate_delta_hedged_trade(coin, entry_time, exit_time, funding_rate, capital)
             
             if trade:
                 self.trades.append(trade)
                 capital = trade['capital_after']
                 trades_executed += 1
-            else:
-                trades_failed += 1
-            
-            self.equity_curve.append((exit_time, capital))
+                self.equity_curve.append((exit_time, capital))
             
             # Progress every 10 hours
             if i % 10 == 0 or i == len(hours):
@@ -289,7 +325,8 @@ def main():
         backtest = DeltaHedgedCachedBacktest(
             price_cache_file='price_cache.csv',
             initial_capital=config['initial_capital'],
-            position_size=config['position_size_pct'],
+            position_size_fixed=config.get('position_size_fixed', 0),
+            position_size_pct=config['position_size_pct'],
             transaction_cost=config['transaction_cost'],
             num_positions=config['num_positions']
         )

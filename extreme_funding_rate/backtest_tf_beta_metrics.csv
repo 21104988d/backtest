@@ -1,0 +1,2 @@
+initial_capital,final_capital,total_return_pct,num_trades,num_wins,num_losses,win_rate_pct,avg_beta,avg_hedged_return,max_drawdown_pct,profit_factor
+10000.0,9657.538063037766,-3.424619369622342,726,330,396,45.45454545454545,0.737846125848026,0.09477970095813482,-8.073695356699787,0.9067943803277903

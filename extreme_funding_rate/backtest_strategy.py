@@ -6,29 +6,38 @@ Data source: Hyperliquid MAINNET only.
 """
 import pandas as pd
 import numpy as np
+import os
 from datetime import datetime, timedelta
 from typing import Dict, List, Tuple
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+# Get the directory where this script is located
+BASEDIR = os.path.dirname(os.path.abspath(__file__))
+os.chdir(BASEDIR)
+
 from config import load_config, print_config
 
 
 class ExtremeFundingBacktest:
     """Backtest engine for extreme negative funding rate strategy."""
     
-    def __init__(self, initial_capital: float = 10000, position_size: float = 1.0, 
-                 transaction_cost: float = 0.0005, num_positions: int = 1):
+    def __init__(self, initial_capital: float = 10000, position_size_fixed: float = 0,
+                 position_size_pct: float = 1.0, transaction_cost: float = 0.0005, 
+                 num_positions: int = 1):
         """
         Initialize backtesting engine.
         
         Args:
             initial_capital: Starting capital in USD
-            position_size: Fraction of capital to use per position (0-1)
+            position_size_fixed: Fixed position size in USD (if > 0, overrides percentage)
+            position_size_pct: Fraction of capital to use per position (0-1)
             transaction_cost: Transaction cost as fraction (0.05% = 0.0005)
             num_positions: Number of extreme negative funding positions to trade
         """
         self.initial_capital = initial_capital
-        self.position_size = position_size
+        self.position_size_fixed = position_size_fixed
+        self.position_size_pct = position_size_pct
         self.transaction_cost = transaction_cost
         self.num_positions = num_positions
         self.trades = []
@@ -36,8 +45,9 @@ class ExtremeFundingBacktest:
         
     def load_data(self, funding_file: str = 'funding_history.csv') -> pd.DataFrame:
         """Load and prepare funding rate data."""
-        df = pd.read_csv(funding_file)
-        df['datetime'] = pd.to_datetime(df['datetime'])
+        filepath = os.path.join(BASEDIR, funding_file)
+        df = pd.read_csv(filepath)
+        df['datetime'] = pd.to_datetime(df['datetime'], format='mixed')
         df = df.sort_values(['datetime', 'coin']).reset_index(drop=True)
         df['hour'] = df['datetime'].dt.floor('h')
         return df
@@ -154,8 +164,11 @@ class ExtremeFundingBacktest:
         if entry_price is None or exit_price is None:
             return None
         
-        # Calculate position size
-        trade_capital = capital * self.position_size
+        # Calculate position size - use fixed if set, otherwise percentage
+        if self.position_size_fixed > 0:
+            trade_capital = min(self.position_size_fixed, capital)  # Don't exceed available capital
+        else:
+            trade_capital = capital * self.position_size_pct
         
         # Entry cost
         entry_cost = trade_capital * self.transaction_cost
@@ -234,7 +247,10 @@ class ExtremeFundingBacktest:
             exit_time = hours[i + 1]  # Next hour
             
             # Calculate capital per position
-            capital_per_position = current_capital * (self.position_size / self.num_positions)
+            if self.position_size_fixed > 0:
+                capital_per_position = min(self.position_size_fixed, current_capital) / self.num_positions
+            else:
+                capital_per_position = current_capital * (self.position_size_pct / self.num_positions)
             
             # Execute trades for each position
             hour_pnl = 0
@@ -439,7 +455,8 @@ def main():
     # Initialize backtest engine with config
     backtest = ExtremeFundingBacktest(
         initial_capital=config['initial_capital'],
-        position_size=config['position_size_pct'],
+        position_size_fixed=config.get('position_size_fixed', 0),
+        position_size_pct=config['position_size_pct'],
         transaction_cost=config['transaction_cost'],
         num_positions=config['num_positions']
     )
