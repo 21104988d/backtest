@@ -11,6 +11,7 @@ def load_config() -> Dict[str, Any]:
     config = {
         # Data fetching
         'days_back': 7,
+        'months_back': 3,
         'fetch_delay': 0.2,
         
         # Backtest parameters
@@ -50,6 +51,7 @@ def load_config() -> Dict[str, Any]:
                     # Map env keys to config keys
                     env_to_config = {
                         'DAYS_BACK': 'days_back',
+                        'MONTHS_BACK': 'months_back',
                         'FETCH_DELAY': 'fetch_delay',
                         'INITIAL_CAPITAL': 'initial_capital',
                         'POSITION_SIZE_FIXED': 'position_size_fixed',
@@ -67,7 +69,7 @@ def load_config() -> Dict[str, Any]:
                         config_key = env_to_config[key]
                         # Convert to appropriate type
                         try:
-                            if config_key in ['days_back', 'num_positions', 'holding_period_hours', 'position_size_fixed']:
+                            if config_key in ['days_back', 'months_back', 'num_positions', 'holding_period_hours', 'position_size_fixed']:
                                 config[config_key] = int(value)
                             else:
                                 config[config_key] = float(value)
