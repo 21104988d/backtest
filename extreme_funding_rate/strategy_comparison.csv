@@ -1,5 +1,0 @@
-Strategy,Final Capital,Total Return,Win Rate,Profit Factor,Max Drawdown,Trades
-Mean Reversion (Long),"$8,792.99",-12.07%,44.55%,0.81,12.67%,716
-Mean Reversion + Delta Hedge,"$8,041.50",-19.59%,40.50%,0.71,20.29%,726
-Trend Following (Short),"$9,985.37",-0.15%,49.59%,1.00,8.98%,726
-Trend Following + Delta Hedge,"$9,344.90",-6.55%,46.14%,0.89,13.43%,726
