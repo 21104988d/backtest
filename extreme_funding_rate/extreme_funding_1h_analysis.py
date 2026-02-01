@@ -3,6 +3,8 @@ Analyze distribution of extreme funding rates and 1-hour after price performance
 Outputs summary stats and visualization charts.
 """
 import argparse
+import os
+import re
 from datetime import timedelta
 
 import numpy as np
@@ -13,33 +15,67 @@ import matplotlib.pyplot as plt
 def load_funding(path):
     funding = pd.read_csv(path)
     if 'datetime' in funding.columns:
-        funding['datetime'] = pd.to_datetime(funding['datetime'], format='mixed')
+        funding['datetime'] = pd.to_datetime(funding['datetime'], format='mixed', utc=True)
     else:
-        funding['datetime'] = pd.to_datetime(funding['timestamp'], unit='ms')
-    funding['hour'] = funding['datetime'].dt.floor('h')
+        funding['datetime'] = pd.to_datetime(funding['timestamp'], unit='ms', utc=True)
+    # Floor to hour and remove timezone for consistent matching
+    funding['hour'] = funding['datetime'].dt.floor('h').dt.tz_localize(None)
     return funding
 
 
 def load_prices(path):
     price = pd.read_csv(path)
-    price['timestamp'] = pd.to_datetime(price['timestamp'])
+    price['timestamp'] = pd.to_datetime(price['timestamp'], utc=True)
+    # Floor to hour and remove timezone for consistent matching
+    price['hour'] = price['timestamp'].dt.floor('h').dt.tz_localize(None)
     return price
 
 
 def build_price_lookup(price_df):
-    return dict(zip(price_df['coin'] + '_' + price_df['timestamp'].astype(str), price_df['price']))
+    # Use floored hour (tz-naive) for consistent key format
+    return dict(zip(price_df['coin'] + '_' + price_df['hour'].astype(str), price_df['price']))
 
 
 def get_price(price_lookup, coin, timestamp):
+    # Ensure timestamp is tz-naive for matching
+    if hasattr(timestamp, 'tz') and timestamp.tz is not None:
+        timestamp = timestamp.tz_localize(None)
     return price_lookup.get(f"{coin}_{timestamp}")
+
+
+def infer_timeframe_tag(*paths):
+    for path in paths:
+        if not path:
+            continue
+        name = os.path.basename(path)
+        match = re.search(r"(\d+)\s*months", name)
+        if match:
+            return f"{match.group(1)}m"
+        match = re.search(r"(\d+)\s*month", name)
+        if match:
+            return f"{match.group(1)}m"
+    return None
+
+
+def build_output_prefix(base_prefix, funding_file, price_file):
+    timeframe = infer_timeframe_tag(funding_file, price_file)
+    if timeframe:
+        return f"{base_prefix}_{timeframe}"
+    return base_prefix
 
 
 def main():
     parser = argparse.ArgumentParser(description="Extreme funding distribution and 1h performance analysis")
     parser.add_argument("--funding-file", default="funding_history.csv")
     parser.add_argument("--price-file", default="price_cache_with_beta_history.csv")
-    parser.add_argument("--output-prefix", default="extreme_funding")
+    parser.add_argument("--output-prefix", default=None)
     args = parser.parse_args()
+
+    output_prefix = args.output_prefix or build_output_prefix(
+        "extreme_funding",
+        args.funding_file,
+        args.price_file,
+    )
 
     funding = load_funding(args.funding_file)
     price = load_prices(args.price_file)
@@ -77,7 +113,7 @@ def main():
         print("No events with valid 1h prices found.")
         return
 
-    out_csv = f"{args.output_prefix}_1h_events.csv"
+    out_csv = f"{output_prefix}_1h_events.csv"
     events_df.to_csv(out_csv, index=False)
 
     # Summary stats
@@ -116,7 +152,7 @@ def main():
     axes[1].set_ylabel('Count')
 
     plt.tight_layout()
-    dist_png = f"{args.output_prefix}_distribution.png"
+    dist_png = f"{output_prefix}_distribution.png"
     plt.savefig(dist_png, dpi=150, bbox_inches='tight')
     plt.close()
 
@@ -140,7 +176,7 @@ def main():
     axes[1].set_ylabel('1h Return (%)')
 
     plt.tight_layout()
-    perf_png = f"{args.output_prefix}_1h_performance.png"
+    perf_png = f"{output_prefix}_1h_performance.png"
     plt.savefig(perf_png, dpi=150, bbox_inches='tight')
     plt.close()
 
