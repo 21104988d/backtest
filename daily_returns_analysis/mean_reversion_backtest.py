@@ -2,13 +2,17 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
+import os
+
+# Resolve paths relative to this script's directory
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Configuration
 N = 3  # Number of top/bottom assets to trade
 INITIAL_CAPITAL = 1000  # Starting capital
 POSITION_SIZE_FIXED = 100  # Fixed position size per trade in USD
 POSITION_FRACTION = 1/6  # Dynamic position size: 1/6 of capital per position
-STOP_LOSS = -1.0  # Stop loss percentage (negative value)
+STOP_LOSS_PCT = 0.5  # Stop loss percentage (positive value, e.g. 0.5 = 0.5%)
 TRADING_FEE = 0.045  # Trading fee percentage per trade (one-way)
 ROUND_TRIP_FEE = TRADING_FEE * 2  # Entry + Exit fee
 
@@ -19,7 +23,7 @@ print(f"\nStrategy: Mean Reversion & Trend Following")
 print(f"  At T=0, identify top {N} gainers and bottom {N} losers")
 print(f"  Mean Reversion: SHORT top {N}, LONG bottom {N}")
 print(f"  Trend Following: LONG top {N}, SHORT bottom {N}")
-print(f"\nSTOP LOSS: {abs(STOP_LOSS)}% per position")
+print(f"\nSTOP LOSS: {STOP_LOSS_PCT}% per position")
 print(f"TRADING FEE: {TRADING_FEE}% per trade ({ROUND_TRIP_FEE}% round-trip)")
 print(f"\nPOSITION SIZING MODES:")
 print(f"  FIXED: ${POSITION_SIZE_FIXED} per asset (${POSITION_SIZE_FIXED * N * 2} total per day)")
@@ -28,7 +32,7 @@ print(f"\nInitial Capital: ${INITIAL_CAPITAL:,.0f}")
 
 # Read the daily OHLC data (generated from hourly prices)
 print("\nLoading daily OHLC data...")
-ohlc_df = pd.read_csv('daily_ohlc.csv')
+ohlc_df = pd.read_csv(os.path.join(SCRIPT_DIR, 'daily_ohlc.csv'))
 ohlc_df['date'] = pd.to_datetime(ohlc_df['date']).dt.date
 
 print(f"Loaded {len(ohlc_df):,} daily OHLC records")
@@ -75,21 +79,26 @@ for i in range(1, len(dates)):
     trade_day_data = ohlc_df[ohlc_df['date'] == trade_date].copy()
     
     # Helper function to calculate position return with proper stop loss using high/low
-    def calculate_position_return(coin, is_long, trade_data, stop_loss_pct):
+    def calculate_position_return(coin, is_long, trade_data, sl_pct):
         """
         Calculate position return with stop loss based on intraday high/low.
         
+        Args:
+            sl_pct: Positive stop loss percentage (e.g. 0.5 means 0.5%)
+        
         For LONG position:
-        - Stop loss triggers if price drops to (open * (1 + stop_loss_pct/100))
-        - Check if low <= stop_loss_price
-        - If triggered, return = stop_loss_pct
-        - If not triggered, return = (close - open) / open * 100
+        - Stop loss price = open * (1 - sl_pct/100)
+        - Triggered if low <= stop_loss_price
+        - If triggered, return = -sl_pct
         
         For SHORT position:
-        - Stop loss triggers if price rises to (open * (1 - stop_loss_pct/100))
-        - Check if high >= stop_loss_price  
-        - If triggered, return = stop_loss_pct (which is negative)
-        - If not triggered, return = (open - close) / open * 100
+        - Stop loss price = open * (1 + sl_pct/100)
+        - Triggered if high >= stop_loss_price
+        - If triggered, return = -sl_pct
+        
+        Note: With daily OHLC, we cannot determine whether the high or low
+        was reached first within the day. We conservatively assume stop loss
+        triggers whenever the adverse price level was touched.
         """
         coin_data = trade_data[trade_data['coin'] == coin]
         if len(coin_data) == 0:
@@ -103,21 +112,21 @@ for i in range(1, len(dates)):
         
         if is_long:
             # Long position: buy at open, stop loss if price drops
-            stop_loss_price = open_price * (1 + stop_loss_pct / 100)  # stop_loss_pct is negative
+            stop_loss_price = open_price * (1 - sl_pct / 100)
             
             if low_price <= stop_loss_price:
                 # Stop loss triggered
-                return stop_loss_pct, True
+                return -sl_pct, True
             else:
                 # No stop loss, use close price
                 return (close_price / open_price - 1) * 100, False
         else:
             # Short position: sell at open, stop loss if price rises
-            stop_loss_price = open_price * (1 - stop_loss_pct / 100)  # stop_loss_pct is negative, so this increases price
+            stop_loss_price = open_price * (1 + sl_pct / 100)
             
             if high_price >= stop_loss_price:
                 # Stop loss triggered
-                return stop_loss_pct, True
+                return -sl_pct, True
             else:
                 # No stop loss, use close price (profit when price goes down)
                 return -(close_price / open_price - 1) * 100, False
@@ -131,7 +140,7 @@ for i in range(1, len(dates)):
     mr_short_returns = []
     mr_short_stops = 0
     for coin in top_coins:
-        ret, stopped = calculate_position_return(coin, is_long=False, trade_data=trade_day_data, stop_loss_pct=STOP_LOSS)
+        ret, stopped = calculate_position_return(coin, is_long=False, trade_data=trade_day_data, sl_pct=STOP_LOSS_PCT)
         if ret is not None:
             ret_with_fee = apply_fee(ret, ROUND_TRIP_FEE)
             mr_short_returns.append(ret_with_fee)
@@ -141,7 +150,7 @@ for i in range(1, len(dates)):
     mr_long_returns = []
     mr_long_stops = 0
     for coin in bottom_coins:
-        ret, stopped = calculate_position_return(coin, is_long=True, trade_data=trade_day_data, stop_loss_pct=STOP_LOSS)
+        ret, stopped = calculate_position_return(coin, is_long=True, trade_data=trade_day_data, sl_pct=STOP_LOSS_PCT)
         if ret is not None:
             ret_with_fee = apply_fee(ret, ROUND_TRIP_FEE)
             mr_long_returns.append(ret_with_fee)
@@ -168,7 +177,7 @@ for i in range(1, len(dates)):
     tf_long_returns = []
     tf_long_stops = 0
     for coin in top_coins:
-        ret, stopped = calculate_position_return(coin, is_long=True, trade_data=trade_day_data, stop_loss_pct=STOP_LOSS)
+        ret, stopped = calculate_position_return(coin, is_long=True, trade_data=trade_day_data, sl_pct=STOP_LOSS_PCT)
         if ret is not None:
             ret_with_fee = apply_fee(ret, ROUND_TRIP_FEE)
             tf_long_returns.append(ret_with_fee)
@@ -178,7 +187,7 @@ for i in range(1, len(dates)):
     tf_short_returns = []
     tf_short_stops = 0
     for coin in bottom_coins:
-        ret, stopped = calculate_position_return(coin, is_long=False, trade_data=trade_day_data, stop_loss_pct=STOP_LOSS)
+        ret, stopped = calculate_position_return(coin, is_long=False, trade_data=trade_day_data, sl_pct=STOP_LOSS_PCT)
         if ret is not None:
             ret_with_fee = apply_fee(ret, ROUND_TRIP_FEE)
             tf_short_returns.append(ret_with_fee)
@@ -262,7 +271,7 @@ results_df['tf_cum_long'] = 1 + results_df['tf_long_return'].cumsum() / 100
 results_df['tf_cum_short'] = 1 + results_df['tf_short_return'].cumsum() / 100
 
 # Save results to CSV
-results_df.to_csv('strategy_comparison_results.csv', index=False)
+results_df.to_csv(os.path.join(SCRIPT_DIR, 'strategy_comparison_results.csv'), index=False)
 
 # Flatten all individual position returns for detailed analysis
 mr_all_position_returns = []
@@ -487,7 +496,7 @@ total_fees_paid_fixed = total_positions * ROUND_TRIP_FEE / 100 * POSITION_SIZE_F
 print(f"\n" + "=" * 80)
 print("STOP LOSS & FEE STATISTICS (Using OHLC High/Low for Stop Loss)")
 print("=" * 80)
-print(f"\nStop Loss Level: {abs(STOP_LOSS)}% (triggered based on intraday high/low)")
+print(f"\nStop Loss Level: {STOP_LOSS_PCT}% (triggered based on intraday high/low)")
 print(f"Trading Fee: {TRADING_FEE}% per trade ({ROUND_TRIP_FEE}% round-trip)")
 print(f"Total Positions Traded: {total_positions}")
 print(f"Total Fees Paid (Fixed): ${total_fees_paid_fixed:,.2f}")
@@ -648,7 +657,7 @@ for i in range(5):
 ax8.set_title('Performance Summary - Fixed vs Dynamic Position Sizing', fontsize=14, fontweight='bold', pad=20)
 
 plt.tight_layout()
-plt.savefig('strategy_comparison_performance.png', dpi=150, bbox_inches='tight', facecolor='white')
+plt.savefig(os.path.join(SCRIPT_DIR, 'strategy_comparison_performance.png'), dpi=150, bbox_inches='tight', facecolor='white')
 print("\nMain comparison chart saved to: strategy_comparison_performance.png")
 
 # Additional chart: Strategy comparison with buy-and-hold benchmark
@@ -744,7 +753,7 @@ ax_scatter.text(0.05, 0.95, f'Correlation: {corr:.3f}', transform=ax_scatter.tra
                fontsize=12, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
 
 plt.tight_layout()
-plt.savefig('strategy_comparison_analysis.png', dpi=150, bbox_inches='tight', facecolor='white')
+plt.savefig(os.path.join(SCRIPT_DIR, 'strategy_comparison_analysis.png'), dpi=150, bbox_inches='tight', facecolor='white')
 print("Analysis chart saved to: strategy_comparison_analysis.png")
 
 print("\n" + "=" * 80)
