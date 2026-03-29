@@ -1,0 +1,89 @@
+{
+  "period": {
+    "bars": 109,
+    "start": "2025-12-11",
+    "end": "2026-03-29"
+  },
+  "portfolio": {
+    "pure": {
+      "ret_pct": 2.355,
+      "sharpe": 0.774,
+      "mdd_pct": -4.742
+    },
+    "stat": {
+      "ret_pct": 0.271,
+      "sharpe": 0.121,
+      "mdd_pct": -4.434
+    },
+    "delta_stat_minus_pure": {
+      "ret_pct": -2.084,
+      "sharpe": -0.653,
+      "mdd_pct": 0.308
+    }
+  },
+  "by_ticker": [
+    {
+      "ticker": "AAPL",
+      "pure_ret_pct": -4.036,
+      "pure_sharpe": -0.607,
+      "stat_ret_pct": -1.709,
+      "stat_sharpe": -0.262,
+      "delta_sharpe": 0.344,
+      "delta_ret_pct": 2.327
+    },
+    {
+      "ticker": "MSFT",
+      "pure_ret_pct": 8.027,
+      "pure_sharpe": 1.911,
+      "stat_ret_pct": -3.48,
+      "stat_sharpe": -0.638,
+      "delta_sharpe": -2.549,
+      "delta_ret_pct": -11.506
+    },
+    {
+      "ticker": "NVDA",
+      "pure_ret_pct": 7.369,
+      "pure_sharpe": 1.295,
+      "stat_ret_pct": 0.38,
+      "stat_sharpe": 0.132,
+      "delta_sharpe": -1.163,
+      "delta_ret_pct": -6.989
+    },
+    {
+      "ticker": "GOOGL",
+      "pure_ret_pct": 0.1,
+      "pure_sharpe": 0.081,
+      "stat_ret_pct": 5.119,
+      "stat_sharpe": 1.101,
+      "delta_sharpe": 1.021,
+      "delta_ret_pct": 5.019
+    },
+    {
+      "ticker": "AMZN",
+      "pure_ret_pct": -8.931,
+      "pure_sharpe": -0.946,
+      "stat_ret_pct": -13.571,
+      "stat_sharpe": -1.554,
+      "delta_sharpe": -0.608,
+      "delta_ret_pct": -4.64
+    },
+    {
+      "ticker": "META",
+      "pure_ret_pct": -1.65,
+      "pure_sharpe": -0.153,
+      "stat_ret_pct": 2.157,
+      "stat_sharpe": 0.367,
+      "delta_sharpe": 0.52,
+      "delta_ret_pct": 3.807
+    },
+    {
+      "ticker": "TSLA",
+      "pure_ret_pct": 15.607,
+      "pure_sharpe": 3.267,
+      "stat_ret_pct": 13.002,
+      "stat_sharpe": 2.423,
+      "delta_sharpe": -0.844,
+      "delta_ret_pct": -2.605
+    }
+  ]
+}
