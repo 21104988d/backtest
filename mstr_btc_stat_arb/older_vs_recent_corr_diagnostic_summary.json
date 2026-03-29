@@ -1,0 +1,15 @@
+{
+  "hypothesis": "recent_underperformance_due_to_lower_mstr_btc_correlation",
+  "all_corr_old_vs_recent": [
+    0.7662981779622031,
+    0.7338233775820493
+  ],
+  "all_sharpe_old_vs_recent": [
+    1.9419297891711496,
+    -0.022832008902421735
+  ],
+  "all_z5_corr_old_vs_recent": [
+    -0.1728803232530851,
+    -0.058565082885328454
+  ]
+}

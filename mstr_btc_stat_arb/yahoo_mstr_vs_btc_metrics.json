@@ -1,0 +1,18 @@
+{
+  "source": "Yahoo Finance",
+  "asset": "MSTR",
+  "btc": "BTC-USD",
+  "start": "2022-01-03",
+  "end": "2026-03-20",
+  "rows_aligned": 1057,
+  "returns_corr": 0.7481629777577157,
+  "price_beta_static": 1.7060760611127368,
+  "rolling_beta_window": 60,
+  "rolling_beta_last": 1.4418500925182518,
+  "strategy_total_return_net": -0.1233048236413139,
+  "strategy_sharpe_365_net": 0.19802739534574437,
+  "max_drawdown_net": -0.5911603650055535,
+  "signal_count": 471,
+  "z_entry": 1.75,
+  "z_exit": 0.5
+}

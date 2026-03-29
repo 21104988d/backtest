@@ -1,0 +1,62 @@
+{
+  "asset": "MSTR",
+  "btc": "BTC-USD",
+  "start": "2022-01-04",
+  "end": "2026-03-20",
+  "beta_window": 40,
+  "ou_lookback": 120,
+  "regime_definition": {
+    "vol_window": 40,
+    "quantile_lookback": 252,
+    "min_history": 84
+  },
+  "summary_by_regime": [
+    {
+      "regime": "high",
+      "bars": 200,
+      "beta_mean": 1.4019854829094596,
+      "beta_std": 0.23840743729682215,
+      "kappa_mean": 0.06824442050475432,
+      "kappa_std": 0.031382752624268186,
+      "hl_mean": 17.529616348714903,
+      "hl_median": 10.064922330529669
+    },
+    {
+      "regime": "mid",
+      "bars": 331,
+      "beta_mean": 1.3537903672749598,
+      "beta_std": 0.2303652887364063,
+      "kappa_mean": 0.0740914702618057,
+      "kappa_std": 0.052449002962340945,
+      "hl_mean": 131.10044336170156,
+      "hl_median": 9.338889512638202
+    },
+    {
+      "regime": "low",
+      "bars": 402,
+      "beta_mean": 1.1567027196005102,
+      "beta_std": 0.2221814817297489,
+      "kappa_mean": 0.04558869385317889,
+      "kappa_std": 0.030546828550093413,
+      "hl_mean": 23.13617256485306,
+      "hl_median": 18.603191460547425
+    },
+    {
+      "regime": "unknown",
+      "bars": 123,
+      "beta_mean": 1.327991915556851,
+      "beta_std": 0.2572600211981468,
+      "kappa_mean": 0.0367480973541128,
+      "kappa_std": 0.0018459234512122856,
+      "hl_mean": 18.894087621745474,
+      "hl_median": 18.80129163899317
+    }
+  ],
+  "artifacts": {
+    "series_csv": "ou_beta_regime_diagnostics_series.csv",
+    "timeseries_plot": "ou_beta_regime_timeseries.png",
+    "beta_distribution_plot": "beta_distribution_by_regime.png",
+    "ou_kappa_distribution_plot": "ou_kappa_distribution_by_regime.png",
+    "ou_half_life_distribution_plot": "ou_half_life_distribution_by_regime.png"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "asset": "ETH",
+  "btc": "BTC",
+  "start_ms": 0,
+  "end_ms": 1774271188000,
+  "cache_dir": "/Users/leeisaackaiyui/Desktop/backtest/eth_btc_stat_arb/data",
+  "intervals": {
+    "1h": {
+      "asset_rows": 5003,
+      "btc_rows": 5003,
+      "asset_source": "api",
+      "btc_source": "api",
+      "asset_cache_file": "/Users/leeisaackaiyui/Desktop/backtest/eth_btc_stat_arb/data/eth_1h.csv",
+      "btc_cache_file": "/Users/leeisaackaiyui/Desktop/backtest/eth_btc_stat_arb/data/btc_1h.csv"
+    },
+    "4h": {
+      "asset_rows": 5001,
+      "btc_rows": 5001,
+      "asset_source": "api",
+      "btc_source": "api",
+      "asset_cache_file": "/Users/leeisaackaiyui/Desktop/backtest/eth_btc_stat_arb/data/eth_4h.csv",
+      "btc_cache_file": "/Users/leeisaackaiyui/Desktop/backtest/eth_btc_stat_arb/data/btc_4h.csv"
+    },
+    "1d": {
+      "asset_rows": 2043,
+      "btc_rows": 2043,
+      "asset_source": "api",
+      "btc_source": "api",
+      "asset_cache_file": "/Users/leeisaackaiyui/Desktop/backtest/eth_btc_stat_arb/data/eth_1d.csv",
+      "btc_cache_file": "/Users/leeisaackaiyui/Desktop/backtest/eth_btc_stat_arb/data/btc_1d.csv"
+    }
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "config": {
+    "asset": "MSTR",
+    "btc": "BTC-USD",
+    "start": "2022-01-01",
+    "end": "2026-03-23",
+    "wf_start_date": "2024-01-01",
+    "oos_months": 3,
+    "inner_oos_months": 2,
+    "embargo_bars": 10,
+    "min_train_bars": 252,
+    "min_inner_train_bars": 180,
+    "min_oos_bars": 35,
+    "z_window": 30,
+    "fee_rate": 0.00045,
+    "candidate_count": 36,
+    "regularization": {
+      "max_regime_z_drift": 0.0,
+      "max_regime_exit_drift": 0.0,
+      "max_regime_bw_drift": 0,
+      "min_regime_sharpe_improve": 999.0,
+      "min_regime_bars": 40
+    },
+    "objective_penalties": {
+      "penalty_sharpe_std": 0.8,
+      "penalty_negative_median": 8.0,
+      "penalty_mdd": 1.2,
+      "penalty_low_active": 2.0,
+      "penalty_nonneg_ratio": 3.0
+    }
+  },
+  "fold_count": 9,
+  "aggregate": {
+    "nested_global_oos": {
+      "total_return": -0.11499954736426177,
+      "sharpe_365": 0.06077480702620501,
+      "max_drawdown": -0.35036292772975,
+      "active_ratio": 0.3237410071942446
+    },
+    "regularized_map_oos": {
+      "total_return": -0.11499954736426177,
+      "sharpe_365": 0.06077480702620501,
+      "max_drawdown": -0.35036292772975,
+      "active_ratio": 0.3237410071942446
+    },
+    "naive_is_best_oos": {
+      "total_return": -0.1457369592851876,
+      "sharpe_365": -0.02283200890242293,
+      "max_drawdown": -0.35975633035042,
+      "active_ratio": 0.2643884892086331
+    }
+  },
+  "gates": {
+    "median_oos_return": 0.03446478094712502,
+    "nonneg_fold_ratio": 0.5555555555555556,
+    "worst_fold_mdd": -0.35036292772975,
+    "mean_oos_sharpe": 0.1393598744122244,
+    "gate_median_return_pass": true,
+    "gate_nonneg_ratio_pass": false,
+    "gate_mdd_pass": false,
+    "overall_pass": false
+  }
+}

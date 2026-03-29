@@ -1,0 +1,15 @@
+{
+  "slice": "OOS_2024_plus_high_regime",
+  "n_bars": 218,
+  "linear_corr_z_fwd5d": -0.025208286474461522,
+  "corr_perm_pvalue_two_sided": 0.7125,
+  "entry_threshold": 1.75,
+  "entry_count": 46,
+  "contrarian_edge_mean_fwd5d": 0.002536622457918323,
+  "contrarian_edge_bootstrap_ci95": [
+    -0.023563504970939477,
+    0.02907990791851846
+  ],
+  "high_regime_strategy_return_baseline": -0.08225883752719076,
+  "high_regime_strategy_return_variant": 0.014200657514914283
+}

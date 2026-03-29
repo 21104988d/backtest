@@ -1,0 +1,378 @@
+{
+  "summary": [
+    {
+      "mode": "standard",
+      "best_entry": 1.5,
+      "best_exit": 0.25,
+      "best_net_return": -0.3096163106565375,
+      "best_sharpe": -0.30423006067458336,
+      "best_mdd": -0.48812826434404666,
+      "best_trades": 144,
+      "baseline_sharpe": -1.847204069669916,
+      "delta_sharpe_best_minus_baseline": 1.5429740089953325,
+      "delta_return_best_minus_baseline": 0.434391881195466
+    },
+    {
+      "mode": "robust_mad",
+      "best_entry": 2.25,
+      "best_exit": 0.5,
+      "best_net_return": -0.14074478803383617,
+      "best_sharpe": -0.08230442779570822,
+      "best_mdd": -0.38176017566932763,
+      "best_trades": 139,
+      "baseline_sharpe": -0.25652523654973935,
+      "delta_sharpe_best_minus_baseline": 0.17422080875403112,
+      "delta_return_best_minus_baseline": 0.10132375923346182
+    },
+    {
+      "mode": "vol_adjusted",
+      "best_entry": 1.5,
+      "best_exit": 0.25,
+      "best_net_return": 0.019736284125042358,
+      "best_sharpe": 0.19723007163619882,
+      "best_mdd": -0.437357392889005,
+      "best_trades": 159,
+      "baseline_sharpe": -2.0763752657551837,
+      "delta_sharpe_best_minus_baseline": 2.2736053373913827,
+      "delta_return_best_minus_baseline": 0.8024881302944176
+    }
+  ],
+  "results": {
+    "standard": {
+      "best": {
+        "z_entry": 1.5,
+        "z_exit": 0.25,
+        "net_return": -0.3096163106565375,
+        "sharpe_net": -0.30423006067458336,
+        "max_drawdown_net": -0.48812826434404666,
+        "trades": 144,
+        "score": -1.4244865893626768
+      },
+      "baseline_2_0_0_5": {
+        "z_entry": 2.0,
+        "z_exit": 0.5,
+        "net_return": -0.7440081918520035,
+        "sharpe_net": -1.847204069669916,
+        "max_drawdown_net": -0.754825760988732,
+        "trades": 131,
+        "score": -3.4878555916473797
+      },
+      "top10": [
+        {
+          "z_entry": 1.5,
+          "z_exit": 0.25,
+          "net_return": -0.3096163106565375,
+          "sharpe_net": -0.30423006067458336,
+          "max_drawdown_net": -0.48812826434404666,
+          "trades": 144,
+          "score": -1.4244865893626768
+        },
+        {
+          "z_entry": 1.5,
+          "z_exit": 0.75,
+          "net_return": -0.3166723289832978,
+          "sharpe_net": -0.3990061568465325,
+          "max_drawdown_net": -0.46099635106776315,
+          "trades": 215,
+          "score": -1.5359988589820588
+        },
+        {
+          "z_entry": 1.75,
+          "z_exit": 0.25,
+          "net_return": -0.4808795055555072,
+          "sharpe_net": -0.7052181789861101,
+          "max_drawdown_net": -0.6179954205973324,
+          "trades": 124,
+          "score": -2.0652090201807747
+        },
+        {
+          "z_entry": 1.5,
+          "z_exit": 0.5,
+          "net_return": -0.49538754665524076,
+          "sharpe_net": -0.7667076015713646,
+          "max_drawdown_net": -0.6046416290401646,
+          "trades": 184,
+          "score": -2.159990859651694
+        },
+        {
+          "z_entry": 2.25,
+          "z_exit": 0.25,
+          "net_return": -0.5480303124644341,
+          "sharpe_net": -0.9675250591663173,
+          "max_drawdown_net": -0.6745689588345396,
+          "trades": 96,
+          "score": -2.4126629768353967
+        },
+        {
+          "z_entry": 1.75,
+          "z_exit": 0.75,
+          "net_return": -0.5564963291077969,
+          "sharpe_net": -1.0778172706503906,
+          "max_drawdown_net": -0.6466259943691058,
+          "trades": 172,
+          "score": -2.5430692593886026
+        },
+        {
+          "z_entry": 2.5,
+          "z_exit": 0.25,
+          "net_return": -0.5683539259977878,
+          "sharpe_net": -1.1318866648422878,
+          "max_drawdown_net": -0.6909833174691384,
+          "trades": 80,
+          "score": -2.593853299780565
+        },
+        {
+          "z_entry": 2.0,
+          "z_exit": 0.25,
+          "net_return": -0.6156440598735636,
+          "sharpe_net": -1.1391147141038354,
+          "max_drawdown_net": -0.691819252531502,
+          "trades": 109,
+          "score": -2.631753219166839
+        },
+        {
+          "z_entry": 1.75,
+          "z_exit": 0.5,
+          "net_return": -0.6256977849229628,
+          "sharpe_net": -1.2285511867391783,
+          "max_drawdown_net": -0.7099850986092935,
+          "trades": 152,
+          "score": -2.8005213839577654
+        },
+        {
+          "z_entry": 1.75,
+          "z_exit": 1.0,
+          "net_return": -0.6511144040917876,
+          "sharpe_net": -1.5569349614497827,
+          "max_drawdown_net": -0.6610726241515255,
+          "trades": 181,
+          "score": -3.060080209752834
+        }
+      ]
+    },
+    "robust_mad": {
+      "best": {
+        "z_entry": 2.25,
+        "z_exit": 0.5,
+        "net_return": -0.14074478803383617,
+        "sharpe_net": -0.08230442779570822,
+        "max_drawdown_net": -0.38176017566932763,
+        "trades": 139,
+        "score": -0.9848247791343635
+      },
+      "baseline_2_0_0_5": {
+        "z_entry": 2.0,
+        "z_exit": 0.5,
+        "net_return": -0.24206854726729798,
+        "sharpe_net": -0.25652523654973935,
+        "max_drawdown_net": -0.4137775152562142,
+        "trades": 152,
+        "score": -1.2360802670621676
+      },
+      "top10": [
+        {
+          "z_entry": 2.25,
+          "z_exit": 0.5,
+          "net_return": -0.14074478803383617,
+          "sharpe_net": -0.08230442779570822,
+          "max_drawdown_net": -0.38176017566932763,
+          "trades": 139,
+          "score": -0.9848247791343635
+        },
+        {
+          "z_entry": 2.0,
+          "z_exit": 0.5,
+          "net_return": -0.24206854726729798,
+          "sharpe_net": -0.25652523654973935,
+          "max_drawdown_net": -0.4137775152562142,
+          "trades": 152,
+          "score": -1.2360802670621676
+        },
+        {
+          "z_entry": 1.5,
+          "z_exit": 0.5,
+          "net_return": -0.24696003496682917,
+          "sharpe_net": -0.2331142954988158,
+          "max_drawdown_net": -0.4239527340643665,
+          "trades": 200,
+          "score": -1.2810197636275487
+        },
+        {
+          "z_entry": 1.75,
+          "z_exit": 0.5,
+          "net_return": -0.298000122897634,
+          "sharpe_net": -0.3462818781035174,
+          "max_drawdown_net": -0.46185245768826444,
+          "trades": 171,
+          "score": -1.4409867934800464
+        },
+        {
+          "z_entry": 2.25,
+          "z_exit": 0.25,
+          "net_return": -0.36662295054103056,
+          "sharpe_net": -0.499360450348283,
+          "max_drawdown_net": -0.5303893330969579,
+          "trades": 131,
+          "score": -1.691139116542199
+        },
+        {
+          "z_entry": 2.25,
+          "z_exit": 0.75,
+          "net_return": -0.37973469510789903,
+          "sharpe_net": -0.6301116196132223,
+          "max_drawdown_net": -0.5093135598833015,
+          "trades": 151,
+          "score": -1.7997387393798252
+        },
+        {
+          "z_entry": 2.0,
+          "z_exit": 0.25,
+          "net_return": -0.4357635460399121,
+          "sharpe_net": -0.6411263395378511,
+          "max_drawdown_net": -0.5717540048973643,
+          "trades": 144,
+          "score": -1.92863434933258
+        },
+        {
+          "z_entry": 1.5,
+          "z_exit": 0.25,
+          "net_return": -0.4859308420969096,
+          "sharpe_net": -0.7081078179414352,
+          "max_drawdown_net": -0.5986435473074736,
+          "trades": 179,
+          "score": -2.084394912556382
+        },
+        {
+          "z_entry": 2.0,
+          "z_exit": 0.75,
+          "net_return": -0.45097033126052255,
+          "sharpe_net": -0.797342317279424,
+          "max_drawdown_net": -0.5645260016161098,
+          "trades": 167,
+          "score": -2.0933943205116434
+        },
+        {
+          "z_entry": 1.75,
+          "z_exit": 0.25,
+          "net_return": -0.4902915855942632,
+          "sharpe_net": -0.7479536222107716,
+          "max_drawdown_net": -0.6300705891982517,
+          "trades": 160,
+          "score": -2.168094800607275
+        }
+      ]
+    },
+    "vol_adjusted": {
+      "best": {
+        "z_entry": 1.5,
+        "z_exit": 0.25,
+        "net_return": 0.019736284125042358,
+        "sharpe_net": 0.19723007163619882,
+        "max_drawdown_net": -0.437357392889005,
+        "trades": 159,
+        "score": -0.8364847141418112
+      },
+      "baseline_2_0_0_5": {
+        "z_entry": 2.0,
+        "z_exit": 0.5,
+        "net_return": -0.7827518461693752,
+        "sharpe_net": -2.0763752657551837,
+        "max_drawdown_net": -0.7922810535560962,
+        "trades": 149,
+        "score": -3.809937372867376
+      },
+      "top10": [
+        {
+          "z_entry": 1.5,
+          "z_exit": 0.25,
+          "net_return": 0.019736284125042358,
+          "sharpe_net": 0.19723007163619882,
+          "max_drawdown_net": -0.437357392889005,
+          "trades": 159,
+          "score": -0.8364847141418112
+        },
+        {
+          "z_entry": 1.75,
+          "z_exit": 0.25,
+          "net_return": -0.16698856332966172,
+          "sharpe_net": -0.06831721374810905,
+          "max_drawdown_net": -0.4125990113333534,
+          "trades": 143,
+          "score": -1.0365152364148158
+        },
+        {
+          "z_entry": 1.5,
+          "z_exit": 0.5,
+          "net_return": -0.3920371940826728,
+          "sharpe_net": -0.5011487937642567,
+          "max_drawdown_net": -0.5197784313613005,
+          "trades": 205,
+          "score": -1.7457056564868578
+        },
+        {
+          "z_entry": 2.5,
+          "z_exit": 0.25,
+          "net_return": -0.42266205624139885,
+          "sharpe_net": -0.6684256621192705,
+          "max_drawdown_net": -0.5929947894009874,
+          "trades": 100,
+          "score": -1.9544152409212452
+        },
+        {
+          "z_entry": 2.25,
+          "z_exit": 0.25,
+          "net_return": -0.4838872327118722,
+          "sharpe_net": -0.7692074243460755,
+          "max_drawdown_net": -0.6044388761695616,
+          "trades": 116,
+          "score": -2.0940851766851987
+        },
+        {
+          "z_entry": 1.75,
+          "z_exit": 0.5,
+          "net_return": -0.5307164168045282,
+          "sharpe_net": -0.8912731975131069,
+          "max_drawdown_net": -0.582372640502747,
+          "trades": 177,
+          "score": -2.2330184785186007
+        },
+        {
+          "z_entry": 1.75,
+          "z_exit": 1.0,
+          "net_return": -0.5115573759970269,
+          "sharpe_net": -0.9975559298492694,
+          "max_drawdown_net": -0.5228871728138056,
+          "trades": 227,
+          "score": -2.2703302754768804
+        },
+        {
+          "z_entry": 2.0,
+          "z_exit": 0.25,
+          "net_return": -0.5549819409143975,
+          "sharpe_net": -0.9278081321514531,
+          "max_drawdown_net": -0.7043503443568659,
+          "trades": 125,
+          "score": -2.461508820865185
+        },
+        {
+          "z_entry": 1.5,
+          "z_exit": 0.75,
+          "net_return": -0.5508382869598274,
+          "sharpe_net": -0.9880938144384346,
+          "max_drawdown_net": -0.6191345336267617,
+          "trades": 239,
+          "score": -2.465362881691958
+        },
+        {
+          "z_entry": 1.75,
+          "z_exit": 0.75,
+          "net_return": -0.6025136482618357,
+          "sharpe_net": -1.228016286723651,
+          "max_drawdown_net": -0.60834092465227,
+          "trades": 202,
+          "score": -2.646698136028191
+        }
+      ]
+    }
+  }
+}

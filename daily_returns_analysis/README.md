@@ -8,18 +8,18 @@ This project backtests mean reversion and trend following strategies on cryptocu
 
 ### Signal Generation (Day T-1)
 - Rank all coins by their daily return
-- Identify **Top 3 gainers** (biggest winners)
-- Identify **Bottom 3 losers** (biggest losers)
+- Identify **Top N gainers** (biggest winners)
+- Identify **Bottom N losers** (biggest losers)
 
 ### Trading Execution (Day T)
 
 **Mean Reversion Strategy:**
-- SHORT the top 3 gainers (bet they will reverse down)
-- LONG the bottom 3 losers (bet they will reverse up)
+- SHORT the top N gainers (bet they will reverse down)
+- LONG the bottom N losers (bet they will reverse up)
 
 **Trend Following Strategy:**
-- LONG the top 3 gainers (bet momentum continues)
-- SHORT the bottom 3 losers (bet momentum continues)
+- LONG the top N gainers (bet momentum continues)
+- SHORT the bottom N losers (bet momentum continues)
 
 ### Position Management
 - Enter at market **OPEN** price
@@ -89,9 +89,12 @@ The tighter stop loss wins because the reduced loss per stopped position more th
 
 | File | Description |
 |------|-------------|
+| `config.py` | Central strategy and data-quality configuration |
+| `fetch_hyperliquid_hourly.py` | Fetch recent Hyperliquid hourly candles for all tradable assets and optionally merge historical backfill |
 | `fetch_ohlc_data.py` | Generates daily OHLC from hourly price data |
 | `daily_ohlc.csv` | Daily OHLC data for all coins |
 | `mean_reversion_backtest.py` | Main backtest with fixed vs dynamic comparison |
+| `n_sweep_backtest.py` | Leakage-aware N sweep with train/validation split |
 | `stop_loss_analysis.py` | Stop loss sensitivity analysis |
 | `verify_stop_loss.py` | Verification of stop loss logic |
 | `verify_strategy_positions.py` | Analysis of actual traded positions |
@@ -99,16 +102,20 @@ The tighter stop loss wins because the reduced loss per stopped position more th
 ## Configuration
 
 ```python
-N = 3                    # Number of top/bottom coins to trade
-INITIAL_CAPITAL = 1000   # Starting capital ($)
-POSITION_SIZE_FIXED = 100 # Fixed position size ($)
-POSITION_FRACTION = 1/6  # Dynamic position as fraction of capital
-TRADING_FEE = 0.045      # Fee per trade (%)
+DEFAULT_N = 5                  # Default top/bottom assets to trade
+N_SWEEP_VALUES = range(1, 13)  # N values tested in n_sweep_backtest.py
+INITIAL_CAPITAL = 1000         # Starting capital ($)
+POSITION_SIZE_FIXED = 100      # Fixed position size ($)
+POSITION_FRACTION = 0.10       # Dynamic position sizing fraction
+ROUND_TRIP_FEE_PCT = 0.10      # Taker-only round trip fee (%)
+MIN_ASSETS_PER_DAY = 6         # Data quality gate for tradable universe
 ```
+
+All values are now managed in `config.py`.
 
 ## Data
 
-- **Source**: Binance hourly OHLC data
+- **Source**: Hourly OHLC input CSV (Hyperliquid recent + optional historical backfill supported)
 - **Period**: ~1000 days
 - **Coins**: 200+ cryptocurrencies
 - **Records**: 101,591 daily OHLC entries
@@ -116,8 +123,15 @@ TRADING_FEE = 0.045      # Fee per trade (%)
 ## Usage
 
 ```bash
+# Step 0: Build hourly price_history.csv from Hyperliquid recent window
+# and optionally merge with historical backfill for full history
+python fetch_hyperliquid_hourly.py --history-backfill /path/to/historical_backfill.csv
+
 # Generate OHLC data from hourly prices
 python fetch_ohlc_data.py
+
+# Sweep N from 1 upward with validation-aware ranking
+python n_sweep_backtest.py
 
 # Run main backtest
 python mean_reversion_backtest.py

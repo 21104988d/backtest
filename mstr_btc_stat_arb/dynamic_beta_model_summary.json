@@ -1,0 +1,103 @@
+{
+  "asset": "MSTR",
+  "btc": "BTC-USD",
+  "start": "2022-01-03",
+  "end": "2026-03-20",
+  "beta_window_anchor": 40,
+  "rows_total": 1056,
+  "rows_evaluated": 744,
+  "overall": {
+    "bars": 744,
+    "beta_mae": 0.06299257647930609,
+    "beta_rmse": 0.08624772657955357,
+    "corr_asset_btc": 0.727915731429608,
+    "corr_truehedge_btc": 0.02727131838841528,
+    "corr_modelhedge_btc": 0.025631144560684993,
+    "truehedge_corr_reduction": 0.7006444130411927,
+    "modelhedge_corr_reduction": 0.7022845868689229
+  },
+  "slope_stats": {
+    "count": 744,
+    "mean": -0.025696586553276286,
+    "std": 0.02956144226818553,
+    "p10": -0.07134611198208791,
+    "p50": -0.015871682190891523,
+    "p90": 0.003751938789831937
+  },
+  "regime_metrics": {
+    "high": {
+      "bars": 185,
+      "corr_asset_btc": 0.7174233378909267,
+      "corr_truehedge_btc": 0.07890639195982542,
+      "corr_modelhedge_btc": 0.08592713611795806,
+      "beta_mae": 0.06560043780977644,
+      "beta_rmse": 0.08762770987215873,
+      "beta_mean_true": 1.4044088900781573,
+      "beta_mean_pred": 1.39367884761765
+    },
+    "mid": {
+      "bars": 183,
+      "corr_asset_btc": 0.7312325242457235,
+      "corr_truehedge_btc": -0.05947922796604935,
+      "corr_modelhedge_btc": -0.0633984246990903,
+      "beta_mae": 0.06048205547363343,
+      "beta_rmse": 0.08094980208805887,
+      "beta_mean_true": 1.383981405150946,
+      "beta_mean_pred": 1.3651522311932922
+    },
+    "low": {
+      "bars": 376,
+      "corr_asset_btc": 0.7487429758099793,
+      "corr_truehedge_btc": 0.013884949511333875,
+      "corr_modelhedge_btc": -0.0006436951899613394,
+      "beta_mae": 0.06293132913329831,
+      "beta_rmse": 0.0880439258843341,
+      "beta_mean_true": 1.1579219962221532,
+      "beta_mean_pred": 1.170684564716707
+    },
+    "unknown": {
+      "bars": 0,
+      "corr_asset_btc": NaN,
+      "corr_truehedge_btc": NaN,
+      "corr_modelhedge_btc": NaN,
+      "beta_mae": NaN,
+      "beta_rmse": NaN,
+      "beta_mean_true": NaN,
+      "beta_mean_pred": NaN
+    }
+  },
+  "period_metrics": {
+    "full": {
+      "bars": 744,
+      "corr_asset_btc": 0.727915731429608,
+      "corr_truehedge_btc": 0.02727131838841528,
+      "corr_modelhedge_btc": 0.025631144560684993,
+      "beta_mae": 0.06299257647930609,
+      "beta_rmse": 0.08624772657955357
+    },
+    "pre_2024": {
+      "bars": 188,
+      "corr_asset_btc": 0.7073363046906069,
+      "corr_truehedge_btc": -0.015110575182545558,
+      "corr_modelhedge_btc": -0.03774263364674529,
+      "beta_mae": 0.06542772433139236,
+      "beta_rmse": 0.08249747084691765
+    },
+    "y2024_2025": {
+      "bars": 502,
+      "corr_asset_btc": 0.7111012213411979,
+      "corr_truehedge_btc": 0.025545170075410965,
+      "corr_modelhedge_btc": 0.027297711354899376,
+      "beta_mae": 0.06414447144918961,
+      "beta_rmse": 0.08979974643249604
+    },
+    "y2026_plus": {
+      "bars": 54,
+      "corr_asset_btc": 0.91068013988846,
+      "corr_truehedge_btc": 0.1706147917002048,
+      "corr_modelhedge_btc": 0.18187084260606007,
+      "beta_mae": 0.043806297385347755,
+      "beta_rmse": 0.06187636532011106
+    }
+  }
+}

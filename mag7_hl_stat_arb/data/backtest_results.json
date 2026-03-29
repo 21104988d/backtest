@@ -1,0 +1,95 @@
+{
+  "params": {
+    "z_window": 20,
+    "entry_z": 2.0,
+    "exit_z": 0.5,
+    "fee_rate": 0.00045,
+    "capital_per_pair": 10000.0
+  },
+  "results": {
+    "AAPL": {
+      "n_bars": 86,
+      "n_trades": 12,
+      "total_return_gross": 5.075,
+      "total_return_net": 4.464,
+      "annualized_sharpe_gross": 3.308,
+      "annualized_sharpe_net": 2.994,
+      "max_drawdown_gross_pct": -0.926,
+      "max_drawdown_net_pct": -0.926,
+      "win_rate": 14.1
+    },
+    "AMZN": {
+      "n_bars": 89,
+      "n_trades": 10,
+      "total_return_gross": 15.577,
+      "total_return_net": 15.013,
+      "annualized_sharpe_gross": 2.291,
+      "annualized_sharpe_net": 2.226,
+      "max_drawdown_gross_pct": -1.108,
+      "max_drawdown_net_pct": -1.108,
+      "win_rate": 12.5
+    },
+    "GOOGL": {
+      "n_bars": 89,
+      "n_trades": 12,
+      "total_return_gross": 8.262,
+      "total_return_net": 7.584,
+      "annualized_sharpe_gross": 3.0,
+      "annualized_sharpe_net": 2.78,
+      "max_drawdown_gross_pct": -1.161,
+      "max_drawdown_net_pct": -1.161,
+      "win_rate": 12.5
+    },
+    "META": {
+      "n_bars": 87,
+      "n_trades": 9,
+      "total_return_gross": 11.771,
+      "total_return_net": 11.324,
+      "annualized_sharpe_gross": 2.14,
+      "annualized_sharpe_net": 2.075,
+      "max_drawdown_gross_pct": -0.899,
+      "max_drawdown_net_pct": -0.899,
+      "win_rate": 8.1
+    },
+    "MSFT": {
+      "n_bars": 88,
+      "n_trades": 9,
+      "total_return_gross": 15.754,
+      "total_return_net": 15.242,
+      "annualized_sharpe_gross": 2.661,
+      "annualized_sharpe_net": 2.598,
+      "max_drawdown_gross_pct": -0.224,
+      "max_drawdown_net_pct": -0.269,
+      "win_rate": 11.5
+    },
+    "NVDA": {
+      "n_bars": 93,
+      "n_trades": 10,
+      "total_return_gross": 8.622,
+      "total_return_net": 8.09,
+      "annualized_sharpe_gross": 2.944,
+      "annualized_sharpe_net": 2.817,
+      "max_drawdown_gross_pct": -1.018,
+      "max_drawdown_net_pct": -1.018,
+      "win_rate": 8.7
+    },
+    "TSLA": {
+      "n_bars": 92,
+      "n_trades": 11,
+      "total_return_gross": 5.611,
+      "total_return_net": 5.043,
+      "annualized_sharpe_gross": 1.726,
+      "annualized_sharpe_net": 1.563,
+      "max_drawdown_gross_pct": -2.233,
+      "max_drawdown_net_pct": -2.322,
+      "win_rate": 9.9
+    },
+    "__portfolio__": {
+      "total_return_net": 8.455,
+      "annualized_sharpe_net": 3.976,
+      "max_drawdown_net_pct": -0.549,
+      "n_pairs": 6,
+      "capital_total": 70000.0
+    }
+  }
+}

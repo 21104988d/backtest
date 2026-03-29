@@ -1,0 +1,74 @@
+{
+  "report": "regime_portfolio_full_history_report.md",
+  "performance_csv": "regime_portfolio_full_history_performance.csv",
+  "regime_stats_csv": "regime_portfolio_regime_stats.csv",
+  "series_csv": "regime_portfolio_full_history_series.csv",
+  "chart": "regime_portfolio_full_history_equity.png",
+  "price_position_chart": "regime_portfolio_price_with_positions.png",
+  "performance": [
+    {
+      "portfolio": "ret_baseline",
+      "total_return": 0.8079359048396524,
+      "sharpe_365": 0.7236810664093539,
+      "max_drawdown": -0.3597563303504203,
+      "active_ratio": 0.2490530303030303
+    },
+    {
+      "portfolio": "ret_high_only",
+      "total_return": 0.39270860050715073,
+      "sharpe_365": 0.5367131674403542,
+      "max_drawdown": -0.3597563303504202,
+      "active_ratio": 0.07954545454545454
+    },
+    {
+      "portfolio": "ret_low_only",
+      "total_return": 0.32566527084977626,
+      "sharpe_365": 0.6475857659904798,
+      "max_drawdown": -0.2654174596757092,
+      "active_ratio": 0.10890151515151515
+    },
+    {
+      "portfolio": "ret_high_low_only",
+      "total_return": 0.8462654241061254,
+      "sharpe_365": 0.7942266209031258,
+      "max_drawdown": -0.35975633035042,
+      "active_ratio": 0.1884469696969697
+    },
+    {
+      "portfolio": "ret_regime_weighted",
+      "total_return": 0.5515645932957824,
+      "sharpe_365": 0.6519735191364474,
+      "max_drawdown": -0.3597563303504202,
+      "active_ratio": 0.22348484848484848
+    }
+  ],
+  "regime_stats": [
+    {
+      "vol_regime": "high",
+      "bars": 331,
+      "mean_ret": 0.0013505937030748817,
+      "hit_rate": 0.12386706948640483,
+      "total_return": 0.39270860050715073,
+      "sharpe_365": 0.9584842102083646,
+      "max_drawdown": -0.3597563303504202
+    },
+    {
+      "vol_regime": "mid",
+      "bars": 222,
+      "mean_ret": 0.0004763389753754374,
+      "hit_rate": 0.07207207207207207,
+      "total_return": 0.07619152935350226,
+      "sharpe_365": 0.5300249522799977,
+      "max_drawdown": -0.176253299411692
+    },
+    {
+      "vol_regime": "low",
+      "bars": 348,
+      "mean_ret": 0.0009336614299500944,
+      "hit_rate": 0.15229885057471265,
+      "total_return": 0.32566527084977626,
+      "sharpe_365": 1.1283118234515404,
+      "max_drawdown": -0.2654174596757092
+    }
+  ]
+}

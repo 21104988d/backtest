@@ -1,0 +1,25 @@
+# xyz:MSTR vs BTC Stat-Arb (Rolling Beta)
+
+- Interval: 1d
+- Period: 2025-12-03 00:00:00 to 2026-03-22 00:00:00
+- Aligned bars: 110
+- Static price beta: 0.8479
+- Rolling beta window: 60
+- Rolling beta points: 49 (44.95% coverage)
+- Last rolling beta: 1.5457
+- Return correlation: 0.9160
+- Mean-reversion b: -0.190234
+- Mean-reversion p(one-sided): 0.000150
+- Half-life (days): 3.64
+- Taker fee rate used: 0.00045 (0.045%)
+- Strategy total return (gross): 18.9668%
+- Strategy total return (net): 18.7531%
+- Strategy Sharpe(365) gross/net: 2.4862 / 2.4615
+- Fee drag on ending equity: 0.0021
+- Holding count: 2
+- Avg holding time: 8.00 bars (192.00 hours, 8.00 days)
+- Signal count: 16
+- Chart: xyz:mstr_1d_rolling_beta_charts.png
+
+## Verdict: Potential opportunity
+

@@ -15,6 +15,84 @@ import matplotlib.pyplot as plt
 API_URL = "https://api.hyperliquid.xyz/info"
 
 
+def symbol_to_filename(symbol: str) -> str:
+    return symbol.lower().replace(":", "_").replace("/", "-")
+
+
+def read_candles_csv(path: Path):
+    if not path.exists():
+        return []
+    rows = []
+    with path.open("r", newline="", encoding="utf-8") as f:
+        r = csv.DictReader(f)
+        for row in r:
+            rows.append(
+                {
+                    "t": int(row["t"]),
+                    "time": row["time"],
+                    "close": float(row["close"]),
+                }
+            )
+    rows.sort(key=lambda x: x["t"])
+    return rows
+
+
+def write_candles_csv(path: Path, rows):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=["t", "time", "close"])
+        w.writeheader()
+        for row in rows:
+            w.writerow(
+                {
+                    "t": int(row["t"]),
+                    "time": row["time"],
+                    "close": float(row["close"]),
+                }
+            )
+
+
+def dedup_rows(rows):
+    d = {}
+    for r in rows:
+        d[int(r["t"])] = {
+            "t": int(r["t"]),
+            "time": r["time"],
+            "close": float(r["close"]),
+        }
+    return [d[t] for t in sorted(d.keys())]
+
+
+def filter_range(rows, start_ms: int, end_ms: int):
+    return [r for r in rows if int(r["t"]) >= int(start_ms) and int(r["t"]) <= int(end_ms)]
+
+
+def load_candles_with_cache(
+    symbol: str,
+    interval: str,
+    start_ms: int,
+    end_ms: int,
+    cache_dir: Path,
+    refresh_cache: bool,
+    allow_network: bool,
+):
+    cache_path = cache_dir / f"{symbol_to_filename(symbol)}_{interval}.csv"
+
+    existing = [] if refresh_cache else read_candles_csv(cache_path)
+    existing_in_range = filter_range(existing, start_ms, end_ms)
+    if existing_in_range:
+        return existing_in_range, "cache", cache_path
+
+    if not allow_network:
+        return [], "cache-miss", cache_path
+
+    fetched = fetch_candles(symbol, interval, start_ms, end_ms)
+    merged = dedup_rows(existing + fetched)
+    if merged:
+        write_candles_csv(cache_path, merged)
+    return filter_range(merged, start_ms, end_ms), "api", cache_path
+
+
 def post_info(payload: dict):
     req = Request(
         API_URL,
@@ -232,17 +310,32 @@ def main():
     parser.add_argument("--beta-window", type=int, default=60)
     # Hyperliquid docs userFees example: feeSchedule.cross = 0.00045 (4.5 bps taker perp fee).
     parser.add_argument("--taker-fee-rate", type=float, default=0.00045)
+    parser.add_argument("--cache-dir", default="data")
+    parser.add_argument("--refresh-cache", action="store_true")
+    parser.add_argument("--no-network", action="store_true")
     args = parser.parse_args()
 
     base = Path(__file__).resolve().parent
     out_prefix = args.asset.lower().replace("/", "-")
+    cache_dir = (base / args.cache_dir).resolve()
+    allow_network = not args.no_network
 
-    asset_rows = fetch_candles(args.asset, args.interval, args.start_ms, args.end_ms)
+    asset_rows, asset_source, asset_cache_path = load_candles_with_cache(
+        symbol=args.asset,
+        interval=args.interval,
+        start_ms=args.start_ms,
+        end_ms=args.end_ms,
+        cache_dir=cache_dir,
+        refresh_cache=args.refresh_cache,
+        allow_network=allow_network,
+    )
     if not asset_rows:
         msg = {
             "error": "No candle data for requested asset symbol on Hyperliquid",
             "requested_symbol": args.asset,
             "requested_interval": args.interval,
+            "cache_path": str(asset_cache_path),
+            "asset_source": asset_source,
             "hint": "TradFi token MSTR exists in spot metadata, but there is currently no active MSTR spot pair in universe and no candleSnapshot symbol for MSTR-USDC.",
         }
         (base / f"{out_prefix}_{args.interval}_rolling_beta_error.json").write_text(json.dumps(msg, indent=2), encoding="utf-8")
@@ -253,9 +346,17 @@ def main():
     asset_end_ms = max(r["t"] for r in asset_rows)
 
     # Fetch hedge leg only for the available asset window to avoid oversized requests.
-    btc_rows = fetch_candles(args.btc, args.interval, asset_start_ms, asset_end_ms)
+    btc_rows, btc_source, btc_cache_path = load_candles_with_cache(
+        symbol=args.btc,
+        interval=args.interval,
+        start_ms=asset_start_ms,
+        end_ms=asset_end_ms,
+        cache_dir=cache_dir,
+        refresh_cache=args.refresh_cache,
+        allow_network=allow_network,
+    )
     if not btc_rows:
-        raise RuntimeError("No BTC data returned")
+        raise RuntimeError(f"No BTC data returned. cache={btc_cache_path}")
 
     asset_map = {r["time"]: r["close"] for r in asset_rows}
     btc_map = {r["time"]: r["close"] for r in btc_rows}
@@ -394,6 +495,10 @@ def main():
         "mean_reversion_p_one_sided": p_one,
         "half_life_days": half_life,
         "taker_fee_rate": args.taker_fee_rate,
+        "asset_data_source": asset_source,
+        "btc_data_source": btc_source,
+        "asset_cache_file": str(asset_cache_path),
+        "btc_cache_file": str(btc_cache_path),
         "strategy_total_return_gross": equity_gross[-1] - 1.0,
         "strategy_total_return_net": equity_net[-1] - 1.0,
         "max_drawdown_net": max_drawdown(equity_net),

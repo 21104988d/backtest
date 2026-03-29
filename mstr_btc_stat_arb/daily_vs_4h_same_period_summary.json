@@ -1,0 +1,55 @@
+{
+  "period": {
+    "start": "2025-12-02",
+    "end": "2026-03-22",
+    "same_as_4h_report": true
+  },
+  "four_hour_reference": {
+    "source": "Hyperliquid 4H",
+    "rows": 658,
+    "params": {
+      "beta_window": 60,
+      "z_window": 30,
+      "z_entry": 2.0,
+      "z_exit": 0.5,
+      "fee_rate": 0.00045
+    },
+    "strategy_total_return_net": 0.4963181700238708,
+    "strategy_sharpe_365_net": 4.417034826475933,
+    "max_drawdown_net": -0.06163055607681189
+  },
+  "daily_same_params": {
+    "source": "Yahoo daily",
+    "start": "2025-12-02",
+    "end": "2026-03-20",
+    "rows": 75,
+    "params": {
+      "beta_window": 60,
+      "z_window": 30,
+      "z_entry": 2.0,
+      "z_exit": 0.5,
+      "fee_rate": 0.00045
+    },
+    "strategy_total_return_net": -0.1260584063408723,
+    "strategy_sharpe_365_net": -1.5504323562162634,
+    "max_drawdown_net": -0.17604089157513814,
+    "active_ratio": 0.48
+  },
+  "daily_alt_params": {
+    "source": "Yahoo daily",
+    "start": "2025-12-02",
+    "end": "2026-03-20",
+    "rows": 75,
+    "params": {
+      "beta_window": 60,
+      "z_window": 30,
+      "z_entry": 1.75,
+      "z_exit": 0.5,
+      "fee_rate": 0.00045
+    },
+    "strategy_total_return_net": -0.1260584063408723,
+    "strategy_sharpe_365_net": -1.5504323562162634,
+    "max_drawdown_net": -0.17604089157513814,
+    "active_ratio": 0.48
+  }
+}

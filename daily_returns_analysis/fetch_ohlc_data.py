@@ -5,7 +5,27 @@ This data is needed for proper stop loss calculation using intraday highs/lows.
 
 import pandas as pd
 import numpy as np
-from datetime import datetime
+from datetime import datetime, timezone
+
+from config import (
+    DAILY_OHLC_FILE,
+    DROP_INCOMPLETE_DAYS,
+    HOURLY_PRICE_FILE,
+    MAX_STALENESS_DAYS,
+    MIN_REQUIRED_HOURS_PER_DAY,
+)
+
+
+def assert_data_freshness(date_series):
+    latest_date = pd.to_datetime(date_series.max()).date()
+    today_utc = datetime.now(timezone.utc).date()
+    staleness_days = (today_utc - latest_date).days
+    print(f"Freshness check: latest data is {staleness_days} day(s) old")
+    if staleness_days > MAX_STALENESS_DAYS:
+        raise ValueError(
+            f"Data is stale by {staleness_days} days (allowed: {MAX_STALENESS_DAYS}). "
+            "Refresh hourly source data before rebuilding daily OHLC."
+        )
 
 def main():
     print("=" * 80)
@@ -13,9 +33,9 @@ def main():
     print("=" * 80)
     
     # Load existing hourly price data
-    print("\nLoading price_history.csv...")
-    df = pd.read_csv('price_history.csv')
-    df['timestamp'] = pd.to_datetime(df['timestamp'])
+    print(f"\nLoading {HOURLY_PRICE_FILE.name}...")
+    df = pd.read_csv(HOURLY_PRICE_FILE)
+    df['timestamp'] = pd.to_datetime(df['timestamp'], utc=True)
     df['date'] = df['timestamp'].dt.date
     
     print(f"Loaded {len(df):,} hourly records")
@@ -25,8 +45,15 @@ def main():
     # Check for missing hours per day per coin
     print("\nChecking data quality...")
     hours_per_day = df.groupby(['date', 'coin']).size()
-    incomplete_days = hours_per_day[hours_per_day < 24]
-    print(f"Days with incomplete data (< 24 hours): {len(incomplete_days)}")
+    incomplete_days = hours_per_day[hours_per_day < MIN_REQUIRED_HOURS_PER_DAY]
+    print(f"Days with incomplete data (< {MIN_REQUIRED_HOURS_PER_DAY} hours): {len(incomplete_days)}")
+
+    if DROP_INCOMPLETE_DAYS and len(incomplete_days) > 0:
+        valid_pairs = hours_per_day[hours_per_day >= MIN_REQUIRED_HOURS_PER_DAY].index
+        valid_pair_set = set(valid_pairs.tolist())
+        before_rows = len(df)
+        df = df[df.apply(lambda r: (r['date'], r['coin']) in valid_pair_set, axis=1)]
+        print(f"Dropped {before_rows - len(df):,} hourly rows from incomplete coin-days")
     
     # Sort by timestamp to ensure correct open/close calculation
     df = df.sort_values(['coin', 'timestamp'])
@@ -66,10 +93,12 @@ def main():
     daily_ohlc = daily_ohlc.sort_values(['date', 'coin'])
     
     # Save to CSV
-    output_file = 'daily_ohlc.csv'
+    output_file = DAILY_OHLC_FILE
     daily_ohlc.to_csv(output_file, index=False)
     
-    print(f"\n✓ Saved to {output_file}")
+    assert_data_freshness(daily_ohlc['date'])
+
+    print(f"\n✓ Saved to {output_file.name}")
     print(f"  Total rows: {len(daily_ohlc):,}")
     print(f"  Date range: {daily_ohlc['date'].min()} to {daily_ohlc['date'].max()}")
     print(f"  Unique coins: {daily_ohlc['coin'].nunique()}")

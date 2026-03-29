@@ -1,0 +1,38 @@
+{
+  "oos_2024_plus": [
+    {
+      "sample": "OOS_2024_PLUS",
+      "regime": "high",
+      "corr_z_fwd_1d": 0.11132002234504537,
+      "corr_z_fwd_5d": -0.025208286474461522,
+      "corr_beta_fwd_5d": -0.06480044313993416,
+      "corr_ou_fwd_5d": -0.07503506712185722,
+      "n": 218
+    },
+    {
+      "sample": "OOS_2024_PLUS",
+      "regime": "mid",
+      "corr_z_fwd_1d": 0.1723939123514597,
+      "corr_z_fwd_5d": 0.3863048022266757,
+      "corr_beta_fwd_5d": 0.0012010222738110625,
+      "corr_ou_fwd_5d": -0.18080181297956668,
+      "n": 142
+    },
+    {
+      "sample": "OOS_2024_PLUS",
+      "regime": "low",
+      "corr_z_fwd_1d": -0.2952291866055483,
+      "corr_z_fwd_5d": -0.436869856867378,
+      "corr_beta_fwd_5d": 0.007522312856145073,
+      "corr_ou_fwd_5d": -0.034327791557433714,
+      "n": 196
+    }
+  ],
+  "artifacts": {
+    "numbers": "relationship_correlation_numbers.csv",
+    "heatmap": "relationship_corr_heatmap_oos.png",
+    "scatter": "relationship_zscore_scatter_oos.png",
+    "quantile_curve": "relationship_zscore_quantile_curve_oos.png",
+    "report": "relationship_correlation_report.md"
+  }
+}

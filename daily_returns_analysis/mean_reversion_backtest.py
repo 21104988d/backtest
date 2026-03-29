@@ -1,38 +1,48 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from datetime import datetime, timedelta
 import os
+
+from config import (
+    DAILY_OHLC_FILE,
+    DEFAULT_N,
+    DYNAMIC_SL_MULTIPLIER,
+    INITIAL_CAPITAL,
+    MAX_SL_PCT,
+    MIN_ASSETS_PER_DAY,
+    MIN_SL_PCT,
+    POSITION_FRACTION,
+    POSITION_SIZE_FIXED,
+    RESULTS_FILE,
+    ROUND_TRIP_FEE_PCT,
+)
 
 # Resolve paths relative to this script's directory
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Configuration
-N = 3  # Number of top/bottom assets to trade
-INITIAL_CAPITAL = 1000  # Starting capital
-POSITION_SIZE_FIXED = 100  # Fixed position size per trade in USD
-POSITION_FRACTION = 1/6  # Dynamic position size: 1/6 of capital per position
-STOP_LOSS_PCT = 0.5  # Stop loss percentage (positive value, e.g. 0.5 = 0.5%)
-TRADING_FEE = 0.045  # Trading fee percentage per trade (one-way)
-ROUND_TRIP_FEE = TRADING_FEE * 2  # Entry + Exit fee
+N = DEFAULT_N  # Number of top/bottom assets to trade
+TRADING_FEE = ROUND_TRIP_FEE_PCT / 2  # one-way fee percentage
+ROUND_TRIP_FEE = ROUND_TRIP_FEE_PCT
 
 print("=" * 80)
-print("POSITION SIZING COMPARISON: FIXED $100 vs DYNAMIC 1/6 CAPITAL")
+print("POSITION SIZING COMPARISON: FIXED $100 vs DYNAMIC 10% CAPITAL")
 print("=" * 80)
 print(f"\nStrategy: Mean Reversion & Trend Following")
 print(f"  At T=0, identify top {N} gainers and bottom {N} losers")
 print(f"  Mean Reversion: SHORT top {N}, LONG bottom {N}")
 print(f"  Trend Following: LONG top {N}, SHORT bottom {N}")
-print(f"\nSTOP LOSS: {STOP_LOSS_PCT}% per position")
+print(f"  Minimum tradable assets per signal day: {MIN_ASSETS_PER_DAY}")
+print(f"\nSTOP LOSS: Dynamic {DYNAMIC_SL_MULTIPLIER}x of T-1 return (Min {MIN_SL_PCT}%, Max {MAX_SL_PCT}%)")
 print(f"TRADING FEE: {TRADING_FEE}% per trade ({ROUND_TRIP_FEE}% round-trip)")
 print(f"\nPOSITION SIZING MODES:")
 print(f"  FIXED: ${POSITION_SIZE_FIXED} per asset (${POSITION_SIZE_FIXED * N * 2} total per day)")
-print(f"  DYNAMIC: 1/6 of current capital per position (full capital deployed)")
+print(f"  DYNAMIC: {POSITION_FRACTION * 100}% of current capital per position ({POSITION_FRACTION * 10 * 100}% total deployed)")
 print(f"\nInitial Capital: ${INITIAL_CAPITAL:,.0f}")
 
 # Read the daily OHLC data (generated from hourly prices)
 print("\nLoading daily OHLC data...")
-ohlc_df = pd.read_csv(os.path.join(SCRIPT_DIR, 'daily_ohlc.csv'))
+ohlc_df = pd.read_csv(DAILY_OHLC_FILE)
 ohlc_df['date'] = pd.to_datetime(ohlc_df['date']).dt.date
 
 print(f"Loaded {len(ohlc_df):,} daily OHLC records")
@@ -65,7 +75,8 @@ for i in range(1, len(dates)):
     # Get returns on signal day (T=0)
     signal_day_data = ohlc_df[ohlc_df['date'] == signal_date].copy()
     
-    if len(signal_day_data) < N * 2:
+    min_assets_for_day = max(MIN_ASSETS_PER_DAY, N * 2)
+    if len(signal_day_data) < min_assets_for_day:
         continue  # Not enough assets
     
     # Identify top N gainers and bottom N losers on signal day
@@ -139,8 +150,9 @@ for i in range(1, len(dates)):
     # MEAN REVERSION: Short top, Long bottom
     mr_short_returns = []
     mr_short_stops = 0
-    for coin in top_coins:
-        ret, stopped = calculate_position_return(coin, is_long=False, trade_data=trade_day_data, sl_pct=STOP_LOSS_PCT)
+    for coin, t1_return in top_n:
+        sl_pct = max(MIN_SL_PCT, min(MAX_SL_PCT, abs(t1_return) * DYNAMIC_SL_MULTIPLIER))
+        ret, stopped = calculate_position_return(coin, is_long=False, trade_data=trade_day_data, sl_pct=sl_pct)
         if ret is not None:
             ret_with_fee = apply_fee(ret, ROUND_TRIP_FEE)
             mr_short_returns.append(ret_with_fee)
@@ -149,8 +161,9 @@ for i in range(1, len(dates)):
     
     mr_long_returns = []
     mr_long_stops = 0
-    for coin in bottom_coins:
-        ret, stopped = calculate_position_return(coin, is_long=True, trade_data=trade_day_data, sl_pct=STOP_LOSS_PCT)
+    for coin, t1_return in bottom_n:
+        sl_pct = max(MIN_SL_PCT, min(MAX_SL_PCT, abs(t1_return) * DYNAMIC_SL_MULTIPLIER))
+        ret, stopped = calculate_position_return(coin, is_long=True, trade_data=trade_day_data, sl_pct=sl_pct)
         if ret is not None:
             ret_with_fee = apply_fee(ret, ROUND_TRIP_FEE)
             mr_long_returns.append(ret_with_fee)
@@ -176,8 +189,9 @@ for i in range(1, len(dates)):
     # TREND FOLLOWING: Long top, Short bottom
     tf_long_returns = []
     tf_long_stops = 0
-    for coin in top_coins:
-        ret, stopped = calculate_position_return(coin, is_long=True, trade_data=trade_day_data, sl_pct=STOP_LOSS_PCT)
+    for coin, t1_return in top_n:
+        sl_pct = max(MIN_SL_PCT, min(MAX_SL_PCT, abs(t1_return) * DYNAMIC_SL_MULTIPLIER))
+        ret, stopped = calculate_position_return(coin, is_long=True, trade_data=trade_day_data, sl_pct=sl_pct)
         if ret is not None:
             ret_with_fee = apply_fee(ret, ROUND_TRIP_FEE)
             tf_long_returns.append(ret_with_fee)
@@ -186,8 +200,9 @@ for i in range(1, len(dates)):
     
     tf_short_returns = []
     tf_short_stops = 0
-    for coin in bottom_coins:
-        ret, stopped = calculate_position_return(coin, is_long=False, trade_data=trade_day_data, sl_pct=STOP_LOSS_PCT)
+    for coin, t1_return in bottom_n:
+        sl_pct = max(MIN_SL_PCT, min(MAX_SL_PCT, abs(t1_return) * DYNAMIC_SL_MULTIPLIER))
+        ret, stopped = calculate_position_return(coin, is_long=False, trade_data=trade_day_data, sl_pct=sl_pct)
         if ret is not None:
             ret_with_fee = apply_fee(ret, ROUND_TRIP_FEE)
             tf_short_returns.append(ret_with_fee)
@@ -271,7 +286,7 @@ results_df['tf_cum_long'] = 1 + results_df['tf_long_return'].cumsum() / 100
 results_df['tf_cum_short'] = 1 + results_df['tf_short_return'].cumsum() / 100
 
 # Save results to CSV
-results_df.to_csv(os.path.join(SCRIPT_DIR, 'strategy_comparison_results.csv'), index=False)
+results_df.to_csv(RESULTS_FILE, index=False)
 
 # Flatten all individual position returns for detailed analysis
 mr_all_position_returns = []
@@ -496,7 +511,7 @@ total_fees_paid_fixed = total_positions * ROUND_TRIP_FEE / 100 * POSITION_SIZE_F
 print(f"\n" + "=" * 80)
 print("STOP LOSS & FEE STATISTICS (Using OHLC High/Low for Stop Loss)")
 print("=" * 80)
-print(f"\nStop Loss Level: {STOP_LOSS_PCT}% (triggered based on intraday high/low)")
+print(f"\nStop Loss Level: Dynamic {DYNAMIC_SL_MULTIPLIER}x of T-1 return (Min {MIN_SL_PCT}%, Max {MAX_SL_PCT}%) (triggered based on intraday high/low)")
 print(f"Trading Fee: {TRADING_FEE}% per trade ({ROUND_TRIP_FEE}% round-trip)")
 print(f"Total Positions Traded: {total_positions}")
 print(f"Total Fees Paid (Fixed): ${total_fees_paid_fixed:,.2f}")

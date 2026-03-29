@@ -1,0 +1,25 @@
+# ETH vs BTC Stat-Arb (Rolling Beta)
+
+- Interval: 1h
+- Period: 2025-08-27 03:00:00 to 2026-03-23 13:00:00
+- Aligned bars: 5003
+- Static price beta: 1.4522
+- Rolling beta window: 60
+- Rolling beta points: 4942 (98.80% coverage)
+- Last rolling beta: 1.3420
+- Return correlation: 0.8750
+- Mean-reversion b: -0.005682
+- Mean-reversion p(one-sided): 0.000018
+- Half-life (days): 121.98
+- Taker fee rate used: 0.00045 (0.045%)
+- Strategy total return (gross): 29.2368%
+- Strategy total return (net): 13.2732%
+- Strategy Sharpe(365) gross/net: 2.1320 / 1.0932
+- Fee drag on ending equity: 0.1596
+- Holding count: 147
+- Avg holding time: 14.10 bars (14.10 hours, 0.59 days)
+- Signal count: 2072
+- Chart: eth_1h_rolling_beta_charts.png
+
+## Verdict: Potential opportunity
+

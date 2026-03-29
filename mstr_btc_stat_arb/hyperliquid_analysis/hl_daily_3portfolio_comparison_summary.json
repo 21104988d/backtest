@@ -1,0 +1,53 @@
+{
+  "period": {
+    "start": "2025-12-03",
+    "end": "2026-03-22",
+    "bars": 110,
+    "data_source": "Hyperliquid daily cache"
+  },
+  "portfolio_1_hl_original": {
+    "params": {
+      "beta_window": 60,
+      "z_entry": 2.0,
+      "z_exit": 0.5,
+      "ml_beta": false
+    },
+    "metrics": {
+      "total_return": 0.22015153845668234,
+      "sharpe": 2.760254769598038,
+      "max_drawdown": -0.018273851303384436,
+      "active_ratio": 0.15454545454545454,
+      "bars": 110
+    }
+  },
+  "portfolio_2_yahoo_params_on_hl": {
+    "params": {
+      "beta_window": 90,
+      "z_entry": 1.75,
+      "z_exit": 1.0,
+      "ml_beta": false
+    },
+    "metrics": {
+      "total_return": 0.04719817806023352,
+      "sharpe": 2.5594787419100666,
+      "max_drawdown": -0.003594335100130186,
+      "active_ratio": 0.11818181818181818,
+      "bars": 110
+    }
+  },
+  "portfolio_3_yahoo_params_ml_beta_on_hl": {
+    "params": {
+      "beta_window": 90,
+      "z_entry": 1.75,
+      "z_exit": 1.0,
+      "ml_beta": true
+    },
+    "metrics": {
+      "total_return": 0.04719817806023352,
+      "sharpe": 2.5594787419100666,
+      "max_drawdown": -0.003594335100130186,
+      "active_ratio": 0.11818181818181818,
+      "bars": 110
+    }
+  }
+}

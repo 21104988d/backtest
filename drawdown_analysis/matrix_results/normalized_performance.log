@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "/Users/leeisaackaiyui/Desktop/backtest/drawdown_analysis/compute_normalized_now.py", line 31, in <module>
+    tr = pd.read_csv(trades_path)
+  File "/Users/leeisaackaiyui/Desktop/backtest/.venv/lib/python3.13/site-packages/pandas/io/parsers/readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+  File "/Users/leeisaackaiyui/Desktop/backtest/.venv/lib/python3.13/site-packages/pandas/io/parsers/readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+  File "/Users/leeisaackaiyui/Desktop/backtest/.venv/lib/python3.13/site-packages/pandas/io/parsers/readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/Users/leeisaackaiyui/Desktop/backtest/.venv/lib/python3.13/site-packages/pandas/io/parsers/readers.py", line 1898, in _make_engine
+    return mapping[engine](f, **self.options)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/Users/leeisaackaiyui/Desktop/backtest/.venv/lib/python3.13/site-packages/pandas/io/parsers/c_parser_wrapper.py", line 93, in __init__
+    self._reader = parsers.TextReader(src, **kwds)
+                   ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "pandas/_libs/parsers.pyx", line 581, in pandas._libs.parsers.TextReader.__cinit__
+pandas.errors.EmptyDataError: No columns to parse from file
