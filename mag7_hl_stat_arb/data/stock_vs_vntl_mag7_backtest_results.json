@@ -1,0 +1,67 @@
+{
+  "params": {
+    "beta_window": 30,
+    "z_window": 20,
+    "entry_z": 2.0,
+    "exit_z": 0.5,
+    "fee": 0.00045,
+    "capital": 10000.0
+  },
+  "overlap_bars": 109,
+  "results": {
+    "AAPL": {
+      "bars": 109,
+      "trades": 6,
+      "total_return_net_pct": -1.709,
+      "ann_sharpe_net": -0.262,
+      "max_drawdown_net_pct": -9.164
+    },
+    "MSFT": {
+      "bars": 109,
+      "trades": 10,
+      "total_return_net_pct": -3.48,
+      "ann_sharpe_net": -0.638,
+      "max_drawdown_net_pct": -7.938
+    },
+    "NVDA": {
+      "bars": 109,
+      "trades": 6,
+      "total_return_net_pct": 0.38,
+      "ann_sharpe_net": 0.132,
+      "max_drawdown_net_pct": -6.615
+    },
+    "GOOGL": {
+      "bars": 109,
+      "trades": 9,
+      "total_return_net_pct": 5.119,
+      "ann_sharpe_net": 1.101,
+      "max_drawdown_net_pct": -3.531
+    },
+    "AMZN": {
+      "bars": 109,
+      "trades": 5,
+      "total_return_net_pct": -13.571,
+      "ann_sharpe_net": -1.554,
+      "max_drawdown_net_pct": -16.77
+    },
+    "META": {
+      "bars": 109,
+      "trades": 8,
+      "total_return_net_pct": 2.157,
+      "ann_sharpe_net": 0.367,
+      "max_drawdown_net_pct": -7.901
+    },
+    "TSLA": {
+      "bars": 109,
+      "trades": 9,
+      "total_return_net_pct": 13.002,
+      "ann_sharpe_net": 2.423,
+      "max_drawdown_net_pct": -3.856
+    },
+    "__portfolio__": {
+      "total_return_net_pct": 0.271,
+      "ann_sharpe_net": 0.121,
+      "max_drawdown_net_pct": -4.434
+    }
+  }
+}
