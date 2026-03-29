@@ -1,0 +1,167 @@
+{
+  "1h": {
+    "portfolio": {
+      "ret_pct": 2.3309897803487134,
+      "sharpe": 0.9223208345840261,
+      "mdd_pct": -2.8717362871092167,
+      "bars": 2603,
+      "start": "2025-12-10 17:00:00",
+      "end": "2026-03-29 03:00:00",
+      "z_window": 120
+    },
+    "by_ticker": {
+      "AAPL": {
+        "ret_pct": -11.258,
+        "sharpe": -1.874,
+        "mdd_pct": -16.805,
+        "trades": 51
+      },
+      "MSFT": {
+        "ret_pct": 13.466,
+        "sharpe": 2.121,
+        "mdd_pct": -6.709,
+        "trades": 53
+      },
+      "NVDA": {
+        "ret_pct": -1.886,
+        "sharpe": -0.186,
+        "mdd_pct": -10.538,
+        "trades": 47
+      },
+      "GOOGL": {
+        "ret_pct": 7.18,
+        "sharpe": 1.334,
+        "mdd_pct": -8.835,
+        "trades": 45
+      },
+      "AMZN": {
+        "ret_pct": -2.278,
+        "sharpe": -0.209,
+        "mdd_pct": -9.341,
+        "trades": 56
+      },
+      "META": {
+        "ret_pct": -0.03,
+        "sharpe": 0.09,
+        "mdd_pct": -9.456,
+        "trades": 47
+      },
+      "TSLA": {
+        "ret_pct": 11.123,
+        "sharpe": 1.697,
+        "mdd_pct": -9.63,
+        "trades": 60
+      }
+    }
+  },
+  "4h": {
+    "portfolio": {
+      "ret_pct": -1.934284768803629,
+      "sharpe": -0.882754374916489,
+      "mdd_pct": -3.324703436572385,
+      "bars": 650,
+      "start": "2025-12-10 20:00:00",
+      "end": "2026-03-29 00:00:00",
+      "z_window": 42
+    },
+    "by_ticker": {
+      "AAPL": {
+        "ret_pct": -14.155,
+        "sharpe": -2.736,
+        "mdd_pct": -15.223,
+        "trades": 27
+      },
+      "MSFT": {
+        "ret_pct": 2.022,
+        "sharpe": 0.479,
+        "mdd_pct": -7.431,
+        "trades": 30
+      },
+      "NVDA": {
+        "ret_pct": 1.238,
+        "sharpe": 0.316,
+        "mdd_pct": -5.158,
+        "trades": 30
+      },
+      "GOOGL": {
+        "ret_pct": 2.38,
+        "sharpe": 0.647,
+        "mdd_pct": -9.186,
+        "trades": 29
+      },
+      "AMZN": {
+        "ret_pct": -9.342,
+        "sharpe": -1.438,
+        "mdd_pct": -13.058,
+        "trades": 29
+      },
+      "META": {
+        "ret_pct": 3.511,
+        "sharpe": 0.733,
+        "mdd_pct": -7.838,
+        "trades": 35
+      },
+      "TSLA": {
+        "ret_pct": 0.805,
+        "sharpe": 0.244,
+        "mdd_pct": -8.122,
+        "trades": 30
+      }
+    }
+  },
+  "1d": {
+    "portfolio": {
+      "ret_pct": 2.34303028274212,
+      "sharpe": 0.9266409773738001,
+      "mdd_pct": -4.741574766253265,
+      "bars": 109,
+      "start": "2025-12-11 00:00:00",
+      "end": "2026-03-29 00:00:00",
+      "z_window": 20
+    },
+    "by_ticker": {
+      "AAPL": {
+        "ret_pct": -3.986,
+        "sharpe": -0.719,
+        "mdd_pct": -10.303,
+        "trades": 7
+      },
+      "MSFT": {
+        "ret_pct": 8.093,
+        "sharpe": 2.319,
+        "mdd_pct": -5.942,
+        "trades": 13
+      },
+      "NVDA": {
+        "ret_pct": 7.369,
+        "sharpe": 1.558,
+        "mdd_pct": -5.839,
+        "trades": 7
+      },
+      "GOOGL": {
+        "ret_pct": 0.1,
+        "sharpe": 0.097,
+        "mdd_pct": -8.449,
+        "trades": 8
+      },
+      "AMZN": {
+        "ret_pct": -8.963,
+        "sharpe": -1.144,
+        "mdd_pct": -13.085,
+        "trades": 9
+      },
+      "META": {
+        "ret_pct": -1.82,
+        "sharpe": -0.214,
+        "mdd_pct": -9.778,
+        "trades": 10
+      },
+      "TSLA": {
+        "ret_pct": 15.607,
+        "sharpe": 3.932,
+        "mdd_pct": -2.254,
+        "trades": 11
+      }
+    }
+  }
+}
