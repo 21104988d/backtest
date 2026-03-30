@@ -97,7 +97,7 @@ def print_config(config: Dict[str, Any]):
     print(f"  Transaction cost:       {config['transaction_cost']*100:.3f}%")
     
     print("\n🎯 Strategy:")
-    print(f"  Number of positions:    {config['num_positions']} (top {config['num_positions']} extreme negative)")
+    print(f"  Number of positions:    {config['num_positions']} (bottom-to-top: {config['num_positions']} most extreme negative FR)")
     print(f"  Holding period:         {config['holding_period_hours']} hour(s)")
     
     print("\n⚠️  Risk Management:")
