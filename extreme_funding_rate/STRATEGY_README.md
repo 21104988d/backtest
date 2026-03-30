@@ -2,13 +2,30 @@
 
 ## Overview
 
-A delta-hedged mean-reversion strategy that profits from funding rates reverting to zero on Hyperliquid perpetual futures. The strategy enters SHORT positions when funding rates are slightly elevated and exits when rates normalize.
+A collection of backtests that exploit funding-rate dynamics on Hyperliquid
+perpetual futures.
 
-**Key Insight**: Funding rates tend to mean-revert to zero. When FR is in a "sweet spot" range (0.0014%-0.0015%), it signals a price imbalance that will likely correct. We SHORT the altcoin and LONG BTC to capture this reversion while remaining market-neutral.
+### Strategy A — Narrow-Band Mean-Reversion (original)
+Enters SHORT when FR sits in a tight positive band (0.0014 %–0.0015 %) and
+exits when FR normalises to ≤ 0.0003 %.  BTC delta-hedge keeps the portfolio
+market-neutral.
+
+### Strategy B — Bottom-to-Top Extreme Negative FR (new, config-driven)
+Each hour, all coins are ranked by funding rate **ascending** (most negative =
+bottom → least negative = top).  The `NUM_POSITIONS` coins with the most
+extreme negative rates that fall inside the configured threshold range are
+selected for a **LONG** entry.
+
+**Key insight** — extreme negative FR signals a heavily-shorted asset:
+- LONG positions *receive* funding (shorts pay longs when FR < 0).
+- Mean-reversion predicts price will rise as over-extended shorts are covered.
+
+The position is held for `HOLDING_PERIOD_HOURS` and closed regardless of FR
+level (time-based exit), with optional stop-loss and take-profit guards.
 
 ---
 
-## Final Backtest Results
+## Strategy A — Final Backtest Results
 
 | Metric | Value |
 |--------|-------|
@@ -41,7 +58,7 @@ A delta-hedged mean-reversion strategy that profits from funding rates reverting
 
 ---
 
-## Strategy Rules
+## Strategy A — Rules
 
 ### Entry Conditions
 
@@ -70,7 +87,7 @@ Example:
 
 **Dynamic Rebalancing**: Hedge is adjusted hourly based on current market value of positions.
 
-### Parameters
+### Parameters (hardcoded in `final_complete_backtest.py`)
 
 | Parameter | Value |
 |-----------|-------|
@@ -79,6 +96,39 @@ Example:
 | Exit Threshold | \|FR\| ≤ 0.0003% |
 | Fee Rate | 0.045% (taker) |
 | Funding Interval | Hourly (Hyperliquid) |
+
+---
+
+## Strategy B — Bottom-to-Top Selection Rules
+
+### Selection (each hour)
+
+```
+1. Collect all coins with MIN_FUNDING_THRESHOLD ≤ FR ≤ MAX_FUNDING_THRESHOLD
+2. Sort ascending: most negative first  (bottom → top)
+3. Take the bottom NUM_POSITIONS coins  (most extreme negative)
+4. OPEN LONG on each selected coin
+```
+
+### Exit Conditions
+
+```
+CLOSE LONG after HOLDING_PERIOD_HOURS hours
+  (or earlier if STOP_LOSS_PCT / TAKE_PROFIT_PCT triggers)
+```
+
+### Parameters (all driven by `.env` / `config.py`)
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `NUM_POSITIONS` | 1 | Max concurrent LONG positions |
+| `HOLDING_PERIOD_HOURS` | 1 | Time-based exit (hours) |
+| `POSITION_SIZE_FIXED` | $1,000 | USD per position |
+| `TRANSACTION_COST` | 0.045% | Taker fee per side |
+| `MIN_FUNDING_THRESHOLD` | -0.1% | Minimum FR accepted |
+| `MAX_FUNDING_THRESHOLD` | 0 % | Maximum FR accepted (only negative) |
+| `STOP_LOSS_PCT` | 0 | Stop-loss (0 = disabled) |
+| `TAKE_PROFIT_PCT` | 0 | Take-profit (0 = disabled) |
 
 ---
 
@@ -119,13 +169,17 @@ When FR spikes above 0.0015% after entry:
 ## Files
 
 ### Core Scripts
+
 | File | Description |
 |------|-------------|
-| `final_complete_backtest.py` | Main backtest with hourly funding + dynamic hedge |
+| `backtest.py` | **Strategy B** — config-driven, bottom-to-top extreme negative FR |
+| `final_complete_backtest.py` | Strategy A — hourly funding + dynamic hedge comparison |
 | `generate_charts.py` | Generate all analysis charts |
 | `beta_hedge_comparison.py` | Compare delta vs beta hedging |
-| `fetch_funding_data.py` | Fetch funding rate data from Hyperliquid |
-| `fetch_price_data.py` | Fetch price data from Hyperliquid |
+| `fetch_data.py` | Fetch funding + price data from Hyperliquid |
+| `fetch_funding_data.py` | Funding-rate-only fetcher |
+| `fetch_price_data.py` | Price-only fetcher |
+| `config.py` | Config loader (reads `.env`) |
 
 ### Data
 | File | Description |
@@ -136,20 +190,11 @@ When FR spikes above 0.0015% after entry:
 ### Results
 | File | Description |
 |------|-------------|
-| `mean_reversion_results/final_trades.csv` | All trade details |
-| `mean_reversion_results/final_hourly.csv` | Hourly equity & positions |
+| `mean_reversion_results/bottom_top_trades.csv` | Strategy B trade details |
+| `mean_reversion_results/bottom_top_hourly.csv` | Strategy B hourly equity |
+| `mean_reversion_results/final_trades.csv` | Strategy A trade details |
+| `mean_reversion_results/final_hourly.csv` | Strategy A hourly equity |
 | `mean_reversion_results/final_*.png` | Performance charts |
-
----
-
-## Charts Generated
-
-1. **final_backtest_charts.png** - Equity curve, drawdown, positions, PnL components
-2. **final_btc_comparison.png** - Strategy vs BTC, returns distribution, rolling Sharpe
-3. **final_trade_analysis.png** - Trade PnL distribution, SHORT vs LONG, hold times
-4. **final_alpha_beta_analysis.png** - Regression, return attribution, rolling beta
-5. **final_hedge_analysis.png** - Hedge notional, hedge PnL, correlation
-6. **beta_vs_delta_hedge.png** - Comparison of hedging approaches
 
 ---
 
@@ -157,16 +202,18 @@ When FR spikes above 0.0015% after entry:
 
 ```bash
 # 1. Fetch latest data
-python fetch_funding_data.py
-python fetch_price_data.py
+python fetch_data.py
 
-# 2. Run backtest
+# 2. Run Strategy B (bottom-to-top, config-driven)
+python backtest.py
+
+# 3. Run Strategy A (original narrow-band)
 python final_complete_backtest.py
 
-# 3. Generate charts
+# 4. Generate charts
 python generate_charts.py
 
-# 4. Compare hedge types
+# 5. Compare hedge types
 python beta_hedge_comparison.py
 ```
 
@@ -184,8 +231,14 @@ python beta_hedge_comparison.py
 
 ## Summary
 
-This is a **market-neutral mean-reversion strategy** that:
+**Strategy A** is a **market-neutral mean-reversion strategy** that:
 - Captures price moves predicted by funding rate signals
 - Uses BTC delta hedge to reduce market exposure
-- Generates 63.6% annualized alpha with 57.5% of returns from skill
+- Generates 63.6% annualised alpha with 57.5% of returns from skill
 - Achieved 639% return over 2.7 years with 1.46 Sharpe ratio
+
+**Strategy B** is a **bottom-to-top extreme negative FR strategy** that:
+- Sorts all coins from most extreme negative FR (bottom) to least (top)
+- Takes LONG positions on the most extreme negative FR coins each hour
+- Collects funding payments as shorts pay longs
+- Exits after a fixed holding period (configurable via `.env`)
